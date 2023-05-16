@@ -1,108 +1,125 @@
-# genetic algorithm search for continuous function optimization
-from numpy.random import randint
-from numpy.random import rand
+import utils as utils
+import math as math
+import random as rand
 
-# objective function
-def objective(x):
-	return x[0]**2.0 + x[1]**2.0
+#HELPER FUNCTION TO TRANSFORM STATE TO A 2D MATRIX REPRESENTATION
+def state_representation_transform(pop):
+    mat = [x[:] for x in [[0] * len(pop)] * len(pop)]
+    for i in range(len(pop)):
+        mat[i][pop[i]] = 1
+    return mat
 
-# decode bitstring to numbers
-def decode(bounds, n_bits, bitstring):
-	decoded = list()
-	largest = 2**n_bits
-	for i in range(len(bounds)):
-		# extract the substring
-		start, end = i * n_bits, (i * n_bits)+n_bits
-		substring = bitstring[start:end]
-		# convert bitstring to a string of chars
-		chars = ''.join([str(s) for s in substring])
-		# convert string to integer
-		integer = int(chars, 2)
-		# scale integer to desired range
-		value = bounds[i][0] + (integer/largest) * (bounds[i][1] - bounds[i][0])
-		# store
-		decoded.append(value)
-	return decoded
+#HELPER FUNCTION TO DETERMINE CONFLICTS IN TWO POSITIONS
+def conflict(row1, col1, row2, col2):
+    """Would putting two queens in (row1, col1) and (row2, col2) conflict?"""
+    print(row1, col1, row2, col2)
+    return (row1 == row2 or                 # same row
+            col1 == col2 or                 # same column
+            row1 - col1 == row2 - col2 or   # same \ diagonal
+            row1 + col1 == row2 + col2)     # same / diagonal
 
-# tournament selection
-def selection(pop, scores, k=3):
-	# first random selection
-	selection_ix = randint(len(pop))
-	for ix in randint(0, len(pop), k-1):
-		# check if better (e.g. perform a tournament)
-		if scores[ix] < scores[selection_ix]:
-			selection_ix = ix
-	return pop[selection_ix]
+#FITNESS EVALUATION FUNCTION. WE ARE MINIMIZING NUM_CONFLICTS THEREBY CHOOSING THE 
+#STATE THAT HAS THE LOWEST CORRESPONDING OBJECTIVE VALUE
+#INPUT: STATE 1D LIST OUTPUT: SCORE ASSOCIATED WITH A SPECIFIC STATE
+def fitness(state):
+    num_conflicts = 0
+    N = len(state)
+    for c1 in range(N):
+        for c2 in range(c1+1, N):
+            num_conflicts += conflict(state[c1], c1, state[c2], c2)
+    return num_conflicts
 
-# crossover two parents to create two children
-def crossover(p1, p2, r_cross):
-	# children are copies of parents by default
-	c1, c2 = p1.copy(), p2.copy()
-	# check for recombination
-	if rand() < r_cross:
-		# select crossover point that is not on the end of the string
-		pt = randint(1, len(p1)-2)
-		# perform crossover
-		c1 = p1[:pt] + p2[pt:]
-		c2 = p2[:pt] + p1[pt:]
-	return [c1, c2]
+#RETURNS ONE PARENT BASED ON THE SCORES LIST 
+def roulette_selection(population, scores):
+    aggregate = 0.0
+    for i in range(len(population)):
+        aggregate += population[i]
+    prev = 0.0
+    p_state = []
+    for i in range (len(population)):
+        p_state.append(prev + (population[i]) / aggregate)) 
+        prev = p_state[i]
+    #HERE, THE VALUE OF P_STATE[LAST] SHOULD ALWAYS BE 1. IF THIS IS NOT THE CASE
+    #NOT NORMALIZED THE PROBABILITIES CORRECTLY
+    r = rand.uniform(0, 1)
+    for i in range (len(population)):
+        if r < scores[i]:
+            temp = population[i]
+            del population[i]
+            return temp
 
-# mutation operator
-def mutation(bitstring, r_mut):
-	for i in range(len(bitstring)):
-		# check for a mutation
-		if rand() < r_mut:
-			# flip the bit
-			bitstring[i] = 1 - bitstring[i]
+#SINGLE POINT PIVOT CROSSOVER WHERE PIVOT IS RANDOMLY SELECTED WITH UNIFORM 
+#PROBABILITY FROM THE PARENT.SIZE - 1 AVAILABLE POSITIONS
+#p1 AND p2 ARE TUPLES BECAUSE I THINK IT WILL BE EASIER, NO EVIDENCE JUST A FEELING
+#NOTE: NO ASEXUAL REPRODUCTION?
+#NOTE: DO I VALIDATE THAT EACH CHILD MUST BE DISTINCT IMPROVEMENT UPON ITS PREVIOUS GENERATION?
+#IF SO HOW MUCH TIME WOULD THAT ADD? EXPLORE AFTER THE FACT
+#NOTE NO BREEDING RATE 
+#IF THERE WAS A BREEDING RATE WE WRAP THE CROSSOVER IN A CONDITION UPON A RAND() < R_BREED
+def breed(p1, p2):
+    pivot = rand.randint(1, len(p1[0]) - 2)
+    c1 = p1[0][:pivot] + p2[0][pivot:]
+    c2 = p2[0][:pivot] + p1[0][pivot:]
+    return [c1, c2]
 
-# genetic algorithm
-def genetic_algorithm(objective, bounds, n_bits, n_iter, n_pop, r_cross, r_mut):
-	# initial population of random bitstring
-	pop = [randint(0, 2, n_bits*len(bounds)).tolist() for _ in range(n_pop)]
-	# keep track of best solution
-	best, best_eval = 0, objective(decode(bounds, n_bits, pop[0]))
-	# enumerate generations
-	for gen in range(n_iter):
-		# decode population
-		decoded = [decode(bounds, n_bits, p) for p in pop]
-		# evaluate all candidates in the population
-		scores = [objective(d) for d in decoded]
-		# check for new best solution
-		for i in range(n_pop):
-			if scores[i] < best_eval:
-				best, best_eval = pop[i], scores[i]
-				print(">%d, new best f(%s) = %f" % (gen,  decoded[i], scores[i]))
-		# select parents
-		selected = [selection(pop, scores) for _ in range(n_pop)]
-		# create the next generation
-		children = list()
-		for i in range(0, n_pop, 2):
-			# get selected parents in pairs
-			p1, p2 = selected[i], selected[i+1]
-			# crossover and mutation
-			for c in crossover(p1, p2, r_cross):
-				# mutation
-				mutation(c, r_mut)
-				# store for next generation
-				children.append(c)
-		# replace population
-		pop = children
-	return [best, best_eval]
 
-# define range for input
-bounds = [[-5.0, 5.0], [-5.0, 5.0]]
-# define the total iterations
-n_iter = 100
-# bits per variable
-n_bits = 16
-# define the population size
-n_pop = 100
-# crossover rate
-r_cross = 0.9
-# mutation rate
-r_mut = 1.0 / (float(n_bits) * len(bounds))
-# perform the genetic algorithm search
-best, score = genetic_algorithm(objective, bounds, n_bits, n_iter, n_pop, r_cross, r_mut)
-print('Done!')
-decoded = decode(bounds, n_bits, best)
-print('f(%s) = %f' % (decoded, score))
+#HERE WE EMPLOY A SWAP MUTATION 
+# BY TWO RANDOMLY SELECTED POSITIONS IN THE LIST
+def swapmutation(c1, r_mut):
+    r = rand.uniform(0, 1)
+    for _ in range(len(c1[0])):
+        if r < r_mut:
+            rpos1, rpos2 = rand.randint(0, len(c1[0])), rand.randint(0, len(c1[0]))
+            temp = c1[0][rpos1]
+            c1[0][rpos1] = c1[0][rpos2]
+            c1[0][rpos2] = temp
+    return c1
+
+#HERE IS EMPLOYED RANDOM RESET MUTATION BECAUSE IT SEEMS THAT SWAPMUTATION IS
+#NOT SUITABLE FOR THIS [IMPLEMENTATION]
+#INPUT IS A TUPLE
+def random_reset_mutation(c1, r_mut):
+    r = rand.uniform(0, 1)
+	score = fitness(c1)
+    for i in range(len(c1)):
+        if r < r_mut:
+            gene_to_mutate = rand.randint(0, len(c1))
+            new_gene = rand.randint(0, 7)
+            c1[gene_to_mutate] = new_gene
+    return c1
+
+def genetic_algorithm(population, r_mut, n_iter):
+    [best, score] = population[0], fitness(population[0])
+
+    for gen in range(n_iter):
+        scores = [fitness(population[gen]) for gen in range(len(population))]
+        #check for new best
+        for i in range(len(population)):
+            if pop_tuples[i][1] < score:
+                [best, score] = pop_tuples[i]
+                print(">%d, new best f(%s) = %f" % (gen, population[i], scores[i]))
+        gen2 = [roulette_selection(pop_tuples) for _ in range(len(population))]
+        parents = [score_tuple(gen2[i]) for i in range(len(gen2))]
+        children = list()
+        for i in range(0, len(parents), 2):
+            p1, p2 = parents[i], parents[i+1]
+            c1, c2 = breed(p1, p2)
+            c1 = random_reset_mutation(c1, r_mut)
+            c2 = random_reset_mutation(c2, r_mut)
+            children.append(c1)
+            children.append(c2)
+        population = [children[i][0] for i in range(len(children))]
+        print(population)
+    return [best, score]
+
+def main():
+    r_mut = 0.15
+    n_iter = 1000
+    population = [[rand.randint(0, 7) for _ in range(8)] for _ in range(4)]
+
+    
+    best, score = genetic_algorithm(population, r_mut, n_iter)
+    print(best, score)
+
+if __name__ == "__main__":
+    main()
