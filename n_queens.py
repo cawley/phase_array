@@ -18,11 +18,13 @@ def conflicts(state):
     return num_conflicts
 
 def max_conflicts(state):
-    for i in state:
-        state[i] = 0
-    return conflicts(state)
+    temp = state.copy()
+    for i in range(len(temp)):
+        temp[i] = 0
+    return conflicts(temp)
 
-def fitness(state):
+def fitness(state_in):
+    state = state_in.copy()
     num_conflicts = 0
     N = len(state)
     for c1 in range(N):
@@ -74,7 +76,7 @@ def genetic_algorithm(population, r_mut, n_iter):
     [best, score] = population[0], fitness(population[0])
     h = conflicts(population[0])
     for gen in range(n_iter):
-        scores = [fitness(population[gen]) for gen in range(len(population))]
+        scores = [fitness(population[i]) for i in range(len(population))]
         #check for new best
         for i in range(len(population)):
             if scores[i] > score:
@@ -92,35 +94,36 @@ def genetic_algorithm(population, r_mut, n_iter):
         population = children
         for i in range(len(population)):
             if conflicts(population[i]) < h:
-                h = min_h(population[i])
+                h = conflicts(population[i])
     print("\n", "SCORE: ", score, "\n")
     return [best, score, h]
 
 def main():
-    N = int(input("N QUEENS DEMO: Input desired dimension (N).\n"))
-    size = int(input("Population size"))
-    r_mut = float(input("Input Parameters: Mutation rate (default = 1/population size)"))
-    n_iter = int(input("Number of Iterations"))
+    N = int(input("N"))
+    size = int(input("SIZE"))
+    r_mut = float(input("R_MUT"))
+    n_iter = int(input("N_ITER"))
+    n_samp = int(input("N_SAMP"))
 
     population = [[rand.randint(0, N-1) for _ in range (N)] for _ in range(size)]
+
     state = population[0]
     score = 0
-    h = conflicts(state)
 
     best_state = state
     best_score = score 
-    best_h = h
-    for _ in range(n_iter):
+
+    totalh = 0
+    for _ in range(n_samp):
         best, score, h = genetic_algorithm(population, r_mut, n_iter)
+        totalh += h
         if score > best_score:
             best_score = score 
-            best_state = state4
-
-            best_h = h
+            best_state = state
     
-    print("Optimal State: ", best_state, "Score: ", score, "H: ", best_h)
+    totalh = totalh / n_samp
 
-
+    print("Max Possible Score: ", max_conflicts(best_state), "Best State:", best_state, "Best Score:", score, "H:", totalh)
 
 if __name__ == "__main__":
     main()
