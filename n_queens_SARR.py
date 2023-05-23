@@ -105,7 +105,6 @@ def steepestAscentRandomRestart(maxItr, state, numRuns=1000, numRestarts=100):
         
         if convInfo[idx - 1, 0] >= maxItr:
             break
-        print(i)
 
     estimateRestarts = restarts / numRuns
     estimateSteps = steps / numRuns
@@ -140,6 +139,7 @@ def repeatSARR(maxItr, numLoops, state, numRuns, numRestarts):
         convInfoFinal = convInfoFinal[:minLen]
 
         convInfoFinal += convInfo
+        print(i)
     
     convInfoFinal /= numLoops
 

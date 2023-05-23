@@ -3,6 +3,7 @@ import utils
 
 '''
 input:
+    population: initial state population
     N: number of queens
     populationSize: size of the population
     mutationRate: rate of mutation
@@ -10,6 +11,8 @@ input:
 
 returns:
     minh: minimum h value over all (populationSize * runRuns) states
+    convInfo: (n x 2) matrix of minimum conflicts and number of objective function calls, averaged over numLoops calls
+
 '''
 def geneticAlgorithm(population, N=8, populationSize=4, mutationRate=0.15, numRuns=100):
 
@@ -70,3 +73,31 @@ def reproduce(parent1, parent2):
     n = len(parent1)
     c = np.random.randint(low=1, high=n)
     return np.append(parent1[:c], parent2[c:])
+
+'''
+input:
+    maxItr: max number of obj fn calls
+    numLoops: number of loops to average over
+    population: initial state population
+    N: number of queens
+    populationSize: size of the population
+    mutationRate: rate of mutation
+    numRuns: number of runs
+
+returns:
+  convInfo: (n x 2) matrix of minimum conflicts and number of objective function calls, averaged over numLoops calls
+
+'''
+def repeatGAv2(maxItr, numLoops, population, N=8, populationSize=4, mutationRate=0.15, numRuns=100):
+    numRuns = maxItr // populationSize
+    minh, convInfoFinal = geneticAlgorithm(population, N, populationSize, mutationRate, numRuns)
+
+    for i in range(numLoops - 1):
+        minh, convInfo = geneticAlgorithm(population, N, populationSize, mutationRate, numRuns)
+
+        convInfoFinal += convInfo
+        print(i)
+    
+    convInfoFinal /= numLoops
+
+    return convInfoFinal
