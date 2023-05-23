@@ -3,7 +3,11 @@ import numpy as np
 
 '''
 input: 
-  stateinitial state
+  state: initial state
+  convInfo: (2 x n) convergence info
+  idx:  current index for convInfo
+  totalItr: current number of obj fn calls
+  minh: current minimum conflicts
 
 returns:
   current: the final state
@@ -45,7 +49,6 @@ def steepestAscent(state, convInfo, idx, totalItr, minh):
         if neighborH <= -utils.h(current):
             return current, utils.h(state), utils.h(current), count, convInfo, idx, totalItr, minh
         
-
 
         current = neighbor.copy()
         count += 1
