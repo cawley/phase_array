@@ -61,7 +61,8 @@ def steepestAscent(state, convInfo, idx, totalItr, minh):
 
 # 5.2
 '''
-input: 
+input:
+  maxItr: max number of obj fn calls
   state: initial state
   runRuns: number of runs
   rumRestarts: number of restarts
@@ -72,9 +73,9 @@ returns:
   convInfo: (n x 2) matrix of minimum conflicts and number of objective function calls
 
 '''
-def steepestAscentRandomRestart(state, numRuns=1000, numRestarts=100):
+def steepestAscentRandomRestart(maxItr, state, numRuns=1000, numRestarts=100):
 
-    convInfo = np.zeros((1000, 2))
+    convInfo = np.zeros((10000, 2))
     idx = 0
 
     N = len(state)
@@ -102,11 +103,44 @@ def steepestAscentRandomRestart(state, numRuns=1000, numRestarts=100):
 
             restarts += 1
         
-        if idx >= 250:
+        if convInfo[idx - 1, 0] >= maxItr:
             break
         print(i)
 
     estimateRestarts = restarts / numRuns
     estimateSteps = steps / numRuns
 
-    return estimateRestarts, estimateSteps, convInfo
+    return estimateRestarts, estimateSteps, convInfo, idx
+
+
+'''
+input:
+  numLoops: number of loops to average over
+  state: initial state
+  runRuns: number of runs per loop
+  rumRestarts: number of restarts
+
+returns:
+  convInfo: (n x 2) matrix of minimum conflicts and number of objective function calls, averaged over numLoops calls
+
+'''
+def repeatSARR(maxItr, numLoops, state, numRuns, numRestarts):
+    estimateRestarts, estimateSteps, convInfoFinal, len = steepestAscentRandomRestart(maxItr, state, numRuns=numRuns)
+    
+    minLen = len
+    convInfoFinal = convInfoFinal[:minLen]
+
+    for i in range(numLoops - 1):
+        estimateRestarts, estimateSteps, convInfo, len = steepestAscentRandomRestart(maxItr, state, numRuns=100)
+
+        if len < minLen:
+            minLen = len
+        
+        convInfo = convInfo[:minLen]
+        convInfoFinal = convInfoFinal[:minLen]
+
+        convInfoFinal += convInfo
+    
+    convInfoFinal /= numLoops
+
+    return convInfoFinal
