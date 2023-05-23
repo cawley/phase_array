@@ -13,8 +13,6 @@ returns:
   current: the final state
   h: the heuristic cost of the final state
   count: the number of steps taken
-
-
 '''
 def steepestAscent(state, convInfo, idx, totalItr, minh):
 
@@ -59,7 +57,7 @@ def steepestAscent(state, convInfo, idx, totalItr, minh):
         convInfo[idx, :] = [totalItr, minh]
         idx += 1
 
-# 5.2
+
 '''
 input:
   maxItr: max number of obj fn calls
