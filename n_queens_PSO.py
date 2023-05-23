@@ -66,6 +66,10 @@ def pso(n_sub, n_parts, r_maxv, n_iter, cognitive, social, inertia):
                 # gbest[j] is the global best position in dimension j, 
                 # w is the inertia weight, c1 and c2 are cognitive and social coefficients, respectively,
                 # rand() is a random number between 0 and 1.
+                # NOTE: For this problem (NQUEENS) the solution space has dimension 1 and thus
+                # there is no possibility to include a pbest or gbest for separate dimensions.
+                # NOTE: Well, you could make it a multidimensional (N-dimensional, N as in NQUEENS) 
+                # but this is futile and provides no computational benefit.
                 x[i][j] += v[i][j]
                 x[i][j] = x[i][j] % n_sub
         
