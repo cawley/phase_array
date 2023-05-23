@@ -69,7 +69,7 @@ input:
 returns:
   estimateRestarts: Empirical estimate of the expected number of restarts
   estimateSteps: Empirical estimate of the expected total number of steps across restarts
-  convInfo: (2 x n) matrix of minimum conflicts and number of objective function calls
+  convInfo: (n x 2) matrix of minimum conflicts and number of objective function calls
 
 '''
 def steepestAscentRandomRestart(state, numRuns=1000, numRestarts=100):
