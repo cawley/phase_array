@@ -18,11 +18,10 @@ def geneticAlgorithm(population, N=8, populationSize=4, mutationRate=0.15, numRu
 
     convInfo = np.zeros((numRuns, 2))
     idx = 0
+    totalItr = 0
 
     maxConflicts = utils.h(np.zeros((N,)))
     minh = maxConflicts
-
-    totalItr = 0
 
     for k in range(numRuns):
         weights = np.zeros((populationSize,))
