@@ -1,5 +1,6 @@
 import math as math
 import random as rand
+import numpy as np
 
 # CONFLICT DEFINITION
 def conflict(row1, col1, row2, col2):
@@ -58,8 +59,8 @@ def roulette_selection(population, scores):
 # https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)
 def breed(p1, p2):
     pivot = rand.randint(1, len(p1) - 2)
-    c1 = p1[:pivot] + p2[pivot:]
-    c2 = p2[:pivot] + p1[pivot:]
+    c1 = np.append(p1[:pivot], p2[pivot:])
+    c2 = np.append(p2[:pivot], p1[pivot:])
     return [c1, c2]
 
 # SWAP MUTATION GA
@@ -86,15 +87,20 @@ def random_reset_mutation(c1, r_mut):
 
 # STANDARD GA FOR N QUEENS WITH ALL PARAMS MENTIONED  
 def genetic_algorithm(population, r_mut, n_iter):
+    convInfo = np.zeros((n_iter, 2))
+    idx = 0
+    totalItr = 0
+
     [best, score] = population[0], fitness(population[0])
     h = conflicts(population[0])
     for gen in range(n_iter):
         scores = [fitness(population[i]) for i in range(len(population))]
+        totalItr += len(population)
         #check for new best
         for i in range(len(population)):
             if scores[i] > score:
                 best, score = population[i], scores[i]
-                print(">%d, new best f(%s) = %f" % (gen, population[i], scores[i]))
+                #print(">%d, new best f(%s) = %f" % (gen, population[i], scores[i]))
         parents = [roulette_selection(population, scores) for _ in range(len(population))]
         children = list()
         for i in range(0, len(parents) - 1, 2):
@@ -108,8 +114,11 @@ def genetic_algorithm(population, r_mut, n_iter):
         for i in range(len(population)):
             if conflicts(population[i]) < h:
                 h = conflicts(population[i])
-    print("\n", "SCORE: ", score, "\n")
-    return [best, score, h]
+
+        convInfo[idx, :] = [totalItr, h]
+        idx += 1
+    #print("\n", "SCORE: ", score, "\n")
+    return [best, score, h], convInfo
 
 def main():
     print("read comments for parameter explanation\n")
@@ -138,6 +147,32 @@ def main():
     totalh = totalh / n_samp
 
     print("Max Possible Score: ", max_conflicts(best_state), "Best State:", best_state, "Best Score:", score, "H:", totalh)
+
+'''
+input:
+    maxItr: max number of obj fn calls
+    numLoops: number of loops to average over
+    population: initial state population
+    mutationRate: rate of mutation
+    numRuns: number of runs
+
+returns:
+  convInfo: (n x 2) matrix of minimum conflicts and number of objective function calls, averaged over numLoops calls
+
+'''
+def repeatGA(maxItr, numLoops, population, mutationRate=0.15, numRuns=100):
+    numRuns = maxItr // np.shape(population)[0]
+    minh, convInfoFinal = genetic_algorithm(population, mutationRate, numRuns)
+
+    for i in range(numLoops - 1):
+        minh, convInfo = genetic_algorithm(population, mutationRate, numRuns)
+
+        convInfoFinal += convInfo
+        print(i)
+    
+    convInfoFinal /= numLoops
+
+    return convInfoFinal
 
 if __name__ == "__main__":
     main()
