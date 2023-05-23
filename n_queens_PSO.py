@@ -36,7 +36,7 @@ def fitness(state_in):
     return (max_conflicts(state) - num_conflicts)
 
 def pso(n_sub, n_parts, r_maxv, n_iter, cognitive, social, inertia):
-    # X || V meaning they are identically indexed and make up the same population of particles
+    # X || V meaning they are identically indexed and represent the same population of particles
     x = [[(rand.randint(0, n_sub - 1)) for _ in range(n_sub)] for _ in range(n_parts)]
     v = [[(rand.randint(0, r_maxv)) for _ in range(n_sub)] for _ in range(n_parts)]
 
