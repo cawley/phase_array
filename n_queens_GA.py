@@ -40,14 +40,17 @@ def fitness(state_in):
 # SELECTION BASED ON FITNESS PROPORTIONATE ROULETTE 
 # https://en.wikipedia.org/wiki/Fitness_proportionate_selection
 def roulette_selection(population, scores):
-    population.sort(key = fitness, reverse = True)
+    #population.sort(key = fitness, reverse = True)
     aggregate = 0.0
     for i in range(len(population)):
         aggregate += scores[i]
     prev = 0.0
     p_state = []
     for i in range (len(population)):
-        p_state.append(prev + (scores[i] / aggregate)) 
+        if aggregate != 0:
+            p_state.append(prev + (scores[i] / aggregate)) 
+        else:
+            p_state.append(prev)
         prev = p_state[i]
     r = rand.uniform(0, 1)
     for i in range (len(population)):

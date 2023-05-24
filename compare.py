@@ -7,7 +7,7 @@ import n_queens_PSO
 import matplotlib.pyplot as plt
 
 def main():
-    N = 6
+    N = 5
     initialState = np.random.randint(low=0, high=N, size=(N,))
     maxItr = 30000
     numLoops = 150

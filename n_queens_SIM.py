@@ -33,7 +33,10 @@ def simulatedAnnealing(maxItr, state, numRuns=1000):
     nexth = utils.h(next)
 
     deltaE = currh - nexth
-    P = 1 / (1 + np.exp(-deltaE / T))
+    if T != 0:
+      P = 1 / (1 + np.exp(-deltaE / T))
+    else:
+      P = 0
 
     if deltaE > 0:
       state = next.copy()
