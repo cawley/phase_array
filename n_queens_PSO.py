@@ -33,7 +33,7 @@ def fitness(state_in):
             num_conflicts += conflict(state[c1], c1, state[c2], c2)
     return (max_conflicts(state) - num_conflicts)
 
-def pso(n_sub, n_parts, r_maxv, n_iter, cognitive, social, inertia):
+def pso1(n_sub, n_parts, r_maxv, n_iter, cognitive, social, inertia):
     # X || V meaning they are identically indexed and make up the same population of particles
     x = [[(rand.randint(0, n_sub - 1)) for _ in range(n_sub)] for _ in range(n_parts)]
     xprev = x.copy()
@@ -94,6 +94,48 @@ def pso(n_sub, n_parts, r_maxv, n_iter, cognitive, social, inertia):
         c+=1
     print("\n", "GLOBALS: STATE =", gbest, "SCORE =", gbest_score, "\n")
     return gbest
+    
+'''
+inputs:
+    N: integer board size
+    population: 2d vector (integers) of board states
+    vmax: int max velocity 
+
+'''
+#returns best particle in population
+def find_best(population):
+    best = []
+    score = -1
+    for particle in population:
+        if fitness(particle) > score:
+            score = fitness(particle)
+            best = particle
+    return best, score
+
+# returns previous iteration best
+def get_prev(population):
+    return population[0]
+
+#returns velocity of particle
+def get_vel(state):
+    return state[0]
+
+def pso(N, population, vmax, n_iter, c1, c2, w):
+    best_particle, best_score = find_best(population)
+
+    while (best_score < max_conflicts(population[0])) and (c < n_iter):
+
+        for i in range(len(population)):
+            fit = fitness(population[i])
+            if (fit > fitness(get_prev(population[i]))):
+                best_particle = population[i]
+            if (fit > best_score):
+                best_particle = population[i]
+                best_score = fit
+            for j in range (N):
+                v = w * get_vel(population[i]) + c1 * (get_prev(particle[i])[j] - population[i][j]) + (c2 * best_particle[j] - population[i][j])
+                x[i][j] += v
+    return best_particle
     
 
 def main():
