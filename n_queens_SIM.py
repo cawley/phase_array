@@ -50,9 +50,6 @@ def simulatedAnnealing(maxItr, state, numRuns=1000):
       
   return convInfo
 
-      
-
-
 '''
 input:
   maxItr: max number of obj fn calls
@@ -62,7 +59,6 @@ input:
 
 returns:
   convInfo: (n x 2) matrix of minimum conflicts and number of objective function calls, averaged over numLoops calls
-
 '''
 def repeatSIM(maxItr, numLoops, state, numRuns):
     numRuns = maxItr

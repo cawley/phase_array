@@ -89,7 +89,6 @@ def steepestAscentRandomRestart(maxItr, state, numRuns=1000, numRestarts=100):
     idx += 1
     totalItr += 1
 
-
     for i in range(numRuns):
         # randomize the state
         state = np.random.randint(low=0, high=N, size=(N,))

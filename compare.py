@@ -7,10 +7,10 @@ import n_queens_PSO
 import matplotlib.pyplot as plt
 
 def main():
-    N = 12
+    N = 6
     initialState = np.random.randint(low=0, high=N, size=(N,))
-    maxItr = 12000
-    numLoops = 50
+    maxItr = 30000
+    numLoops = 150
 
     convInfoSARR = n_queens_SARR.repeatSARR(maxItr, numLoops, initialState, 100, 100)
     convInfoSIM = n_queens_SIM.repeatSIM(maxItr, numLoops, initialState, 100)

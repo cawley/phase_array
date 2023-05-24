@@ -56,7 +56,6 @@ def geneticAlgorithm(population, N=8, populationSize=4, mutationRate=0.15, numRu
         convInfo[idx, :] = [totalItr, minh]
         idx += 1
         
-
     return minh, convInfo
 
 '''
