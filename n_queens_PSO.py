@@ -2,8 +2,6 @@ import math as math
 import random as rand
 import numpy as np
 
-out = open('out.txt', 'w') 
-
 def conflict(row1, col1, row2, col2):
     """Would putting two queens in (row1, col1) and (row2, col2) conflict?"""
     
