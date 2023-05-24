@@ -12,23 +12,31 @@ returns:
   convInfo: (n x 2) matrix of minimum conflicts and number of objective function calls
 
 '''
-def simulatedAnnealing(maxItr, state, numRuns=1000):
+def simulatedAnnealing(maxItr, state, numRuns=1000, tunnelingProb=0):
   convInfo = np.zeros((maxItr, 2))
 
   N = len(state)
   maxConflicts = utils.h(np.zeros((N,)))
   minh = maxConflicts
-
   currh = utils.h(state)
 
   for i in range(maxItr):
     T = (1 - (i + 1)/maxItr)
 
-    a = np.random.randint(low=0, high=N)
-    b = np.random.randint(low=0, high=N)
-
-    next = state.copy()
-    next[a] = b
+    # with probability tunnelingProb, generate next state very far away from current
+    if np.random.uniform(low=0, high=1) < tunnelingProb:
+      next = state.copy()
+      numRand = int(np.ceil(T*N))
+      inds = np.random.choice(np.linspace(0, N - 1, N).astype(int), size=(numRand,), replace=False)
+      for ind in inds:
+        val = np.random.randint(low=0, high=N)
+        next[ind] = val
+        
+    else:
+      ind = np.random.randint(low=0, high=N)
+      val = np.random.randint(low=0, high=N)
+      next = state.copy()
+      next[ind] = val
 
     nexth = utils.h(next)
 
@@ -63,12 +71,12 @@ input:
 returns:
   convInfo: (n x 2) matrix of minimum conflicts and number of objective function calls, averaged over numLoops calls
 '''
-def repeatSIM(maxItr, numLoops, state, numRuns):
+def repeatSIM(maxItr, numLoops, state, numRuns, tunnelingProb=0):
     numRuns = maxItr
-    convInfoFinal = simulatedAnnealing(maxItr, state, numRuns=numRuns)
+    convInfoFinal = simulatedAnnealing(maxItr, state, numRuns, tunnelingProb)
 
     for i in range(numLoops - 1):
-        convInfo = simulatedAnnealing(maxItr, state, numRuns=100)
+        convInfo = simulatedAnnealing(maxItr, state, numRuns, tunnelingProb)
         convInfoFinal += convInfo
         print(i)
     
