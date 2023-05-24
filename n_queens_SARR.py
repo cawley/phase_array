@@ -79,11 +79,16 @@ def steepestAscentRandomRestart(maxItr, state, numRuns=1000, numRestarts=100):
     N = len(state)
 
     maxConflicts = utils.h(np.zeros((N,)))
-    minh = maxConflicts
+    minh = utils.h(state)
 
     restarts = 0
     steps = 0
     totalItr = 0
+
+    convInfo[idx, :] = [totalItr, minh]
+    idx += 1
+    totalItr += 1
+
 
     for i in range(numRuns):
         # randomize the state
