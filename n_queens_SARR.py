@@ -2,6 +2,8 @@ import utils
 import numpy as np
 
 '''
+The main steepest ascent algorithm. This function is called after every restart.
+
 input: 
   state: initial state
   convInfo: (2 x n) convergence info
@@ -59,6 +61,8 @@ def steepestAscent(state, convInfo, idx, totalItr, minh):
 
 
 '''
+Function implementing random restarts
+
 input:
   maxItr: max number of obj fn calls
   state: initial state
@@ -115,6 +119,8 @@ def steepestAscentRandomRestart(maxItr, state, numRuns=1000, numRestarts=100):
 
 
 '''
+Average results from numLoops runs of the algorithm
+
 input:
   numLoops: number of loops to average over
   state: initial state

@@ -26,6 +26,7 @@ def geneticAlgorithm(population, N=8, populationSize=4, mutationRate=0.15, numRu
     for k in range(numRuns):
         weights = np.zeros((populationSize,))
 
+        # find selection probabilities
         for i in range(populationSize):
             weights[i] = maxConflicts - utils.h(population[i])
             totalItr += 1
@@ -34,12 +35,13 @@ def geneticAlgorithm(population, N=8, populationSize=4, mutationRate=0.15, numRu
         children = []
 
         for i in range(populationSize):
+            # create a child
             inds = np.random.choice(np.linspace(0, populationSize - 1, populationSize).astype(int), p=weights, size=(2,), replace=False)
             parent1 = population[inds[0]]
             parent2 = population[inds[1]]
             child = reproduce(parent1, parent2)
 
-            # mutate
+            # mutate this child
             for j in range(N):
                 if (np.random.uniform(low=0, high=1) < mutationRate):
                     child[j] = np.random.randint(low=0, high=N)
