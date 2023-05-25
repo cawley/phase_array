@@ -115,12 +115,12 @@ The main function main handles user input and calls the pso function with the ap
     - Outputs: Returns gbest (best state found) and h (minimum fitness found).
 
 6. **main**: It handles user input and runs the pso function.
-    - Inputs Takes input from user for n_sub, n_parts, r_maxv, n_iter and n_samp.
+    - Inputs Takes input from user for `n_sub`, `n_parts`, `r_maxv`, `n_iter` and `n_samp`.
     - Outputs: Prints the best state found and its fitness score.
 
 ## Usage
 Run the script in a Python environment.
-When prompted, input the following parameters: n_sub, n_parts, r_maxv, n_iter and n_samp.
+When prompted, input the following parameters: `n_sub`, `n_parts`, `r_maxv`, `n_iter` and `n_samp`.
 The script will output the best state found and its fitness score.
 For multiple trials, the script will also output an average h-score.
 
