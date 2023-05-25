@@ -33,7 +33,7 @@ def fitness(state_in):
             num_conflicts += conflict(state[c1], c1, state[c2], c2)
     return (max_conflicts(state) - num_conflicts)
 
-def pso1(n_sub, n_parts, r_maxv, n_iter, cognitive, social, inertia):
+def pso(n_sub, n_parts, r_maxv, n_iter, cognitive, social, inertia):
     # X || V meaning they are identically indexed and make up the same population of particles
     x = [[(rand.randint(0, n_sub - 1)) for _ in range(n_sub)] for _ in range(n_parts)]
     xprev = x.copy()
@@ -99,7 +99,7 @@ def pso1(n_sub, n_parts, r_maxv, n_iter, cognitive, social, inertia):
 inputs:
     N: integer board size
     population: 2d vector (integers) of board states
-    vmax: int max velocity 
+    vmax: int max velocity  
 
 '''
 #returns best particle in population
@@ -120,7 +120,7 @@ def get_prev(population):
 def get_vel(state):
     return state[0]
 
-def pso(N, population, vmax, n_iter, c1, c2, w):
+def pso1(N, population, vmax, n_iter, c1, c2, w):
     best_particle, best_score = find_best(population)
 
     while (best_score < max_conflicts(population[0])) and (c < n_iter):
@@ -136,7 +136,7 @@ def pso(N, population, vmax, n_iter, c1, c2, w):
                 v = w * get_vel(population[i]) + c1 * (get_prev(particle[i])[j] - population[i][j]) + (c2 * best_particle[j] - population[i][j])
                 x[i][j] += v
     return best_particle
-    
+
 
 def main():
     #HYPERPARAMS
