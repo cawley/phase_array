@@ -15,7 +15,7 @@ global gbest
 global gbest_score
 
 def pso(n_sub, n_parts, r_maxv, n_iter, cognitive, social, inertia):
-    gbest = [] 
+    gbest = [-1] * n_sub 
     gbest_score = -np.inf
 
     particles = [{'states': [rand.randint(0, n_parts-1) for _ in range(n_sub)],
