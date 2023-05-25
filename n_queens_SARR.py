@@ -1,6 +1,8 @@
 import utils
 import numpy as np
 
+#Test comment for github
+
 '''
 The main steepest ascent algorithm. This function is called after every restart.
 
