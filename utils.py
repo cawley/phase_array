@@ -23,7 +23,6 @@ def h(state):
             num_conflicts += conflict(state[c1], c1, state[c2], c2)
     return num_conflicts
 
-
 # 5.3
 '''
 input:

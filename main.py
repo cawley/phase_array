@@ -73,7 +73,7 @@ def random_reset_mutation(c1, r_mut):
             new_gene = rand.randint(0, (len(c1) - 1))
             c1[i] = new_gene
     return c1
-    
+ 
 def genetic_algorithm(population, r_mut, n_iter):
     [best, score] = population[0], fitness(population[0])
     h = min_h(population[0])
@@ -115,8 +115,6 @@ def main():
     print("\n", totalh/1000, "\n")
 
     print(28 - (total/1000))
-
-
 
 if __name__ == "__main__":
     main()
