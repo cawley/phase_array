@@ -19,7 +19,7 @@ This script uses the Particle Swarm Optimization (PSO) algorithm to solve the N-
 
 The PSO algorithm is an optimization technique that works by having a population (known as a swarm) of candidate solutions (known as particles). These particles move around in the search space according to some simple formulae. The movements of the particles are guided by their own best known position along with the swarm's overall best known position. Over time, the swarm as a whole, like birds flocking or fish schooling, will tend towards an optimal area of the search space.
 
-### How it Works
+## How it Works
 The script generates an initial population (swarm) of random solutions (particles). Each particle is evaluated for fitness (its conflicts with other particles) using the fitness function.
 
 The algorithm iteratively updates the velocity and position of each particle towards its personal best position and the global best position found in the entire swarm. The position updating is weighted by three parameters: cognitive, social, and inertia.
