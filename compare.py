@@ -15,6 +15,7 @@ def main():
     convInfoSARR = n_queens_SARR.repeatSARR(maxItr, numLoops, initialState, 100, 100)
     convInfoSIM = n_queens_SIM.repeatSIM(maxItr, numLoops, initialState, 100)
     convInfoQSIM = n_queens_SIM.repeatSIM(maxItr, numLoops, initialState, 100, tunnelingProb=0.1)
+    convInfoPSO = n_queens_PSO.repeatPSO(maxItr, numLoops, initialState, 100)
 
     popSize = 4
     mutationRate = 0.15
@@ -26,7 +27,8 @@ def main():
     line3, = plt.plot(convInfoGA[:, 0], convInfoGA[:, 1], label='Genetic Algorithm Liam')
     line4, = plt.plot(convInfoGAv2[:, 0], convInfoGAv2[:, 1], label='Genetic Algorithm Gabe')
     line5, = plt.plot(convInfoQSIM[:, 0], convInfoQSIM[:, 1], label='Quantum Annealing')
-    plt.legend(handles=[line1, line2, line3, line4, line5])
+    line6, = plt.plot(convInfoPSO[:, 0], convInfoPSO[:, 1], label='Particle Swarm Optimization')
+    plt.legend(handles=[line1, line2, line3, line4, line5, line6])
     plt.title('N = {} Queens, {} Max Calls, {} Iterations'.format(N, maxItr, numLoops))
     plt.grid()
     plt.show()

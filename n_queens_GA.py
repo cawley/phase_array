@@ -120,7 +120,6 @@ def genetic_algorithm(population, r_mut, n_iter):
 
         convInfo[idx, :] = [totalItr, h]
         idx += 1
-    #print("\n", "SCORE: ", score, "\n")
     return [best, score, h], convInfo
 
 def main():
