@@ -12,7 +12,7 @@ We attempt this problem with a few different optimization metaheuristics:
 
 We then rate the performance of each implementation, where a high performance is denoted by a low number of calls to the fitness function and strong tendency towards the optimal state as N tends to the highest known solution for NQueens, 27. Following are explanations for the usage and understanding of each algorithm. 
 
-# Genetic Algorithm Approach 
+# Genetic Algorithm Approach :dna:
 
 ## Description
 This script uses the Genetic Algorithm (GA) to solve the N-Queens problem. The N-Queens problem is a classic artificial intelligence problem where one is asked to place N queens on an NxN chess board such that no two queens threaten each other. The Genetic Algorithm is a search heuristic that is inspired by Charles Darwin’s theory of natural evolution. This algorithm reflects the process of natural selection where the fittest individuals are selected for reproduction in order to produce the offspring of the next generation.
@@ -74,9 +74,9 @@ The main function `main` handles user input and calls the `genetic_algorithm` fu
 ## License
 This project is licensed under the MIT License.
 
-# Particle Swarm Optimization Approach 
+# Particle Swarm Optimization Approach 🐝 
 ## Description
-This script uses the Particle Swarm Optimization (PSO) algorithm to solve the N-Queens problem. The N-Queens problem is a classic AI problem where one is asked to place N queens on an NxN chess board such that no two queens threaten each other. This problem is famous for its NP-Hard nature. The goal of this script is to provide an optimized solution for the problem using PSO.
+This script uses the Particle Swarm Optimization (PSO) algorithm to solve the N-Queens problem. The goal of this script is to provide an optimized solution for the problem using PSO.
 
 The PSO algorithm is an optimization technique that works by having a population (known as a swarm) of candidate solutions (known as particles). These particles move around in the search space according to some simple formulae. The movements of the particles are guided by their own best known position along with the swarm's overall best known position. Over time, the swarm as a whole, like birds flocking or fish schooling, will tend towards an optimal area of the search space.
 
@@ -122,6 +122,74 @@ Run the script in a Python environment.
 When prompted, input the following parameters: `n_sub`, `n_parts`, `r_maxv`, `n_iter` and `n_samp`.
 The script will output the best state found and its fitness score.
 For multiple trials, the script will also output an average h-score.
+
+## License
+This project is licensed under the MIT License.
+
+# Steepest Ascent with Random Restart Approach 🗻
+
+## Description
+This script implements a Steepest Ascent Hill Climbing algorithm with Random Restart to solve the N-Queens problem. 
+
+## How it Works
+The script works by exploring the problem space for the best neighbor state using a Steepest Ascent approach. If it reaches a peak where no better neighboring states can be found, it performs a random restart and begins the search again. The algorithm continues until the maximum number of iterations is reached or a solution is found.
+
+The algorithm employs a heuristic cost function, h(state), which calculates the total number of conflicts in a given state. The fewer the conflicts, the better the state.
+
+## Code Structure
+The main function `steepestAscentRandomRestart` manages the random restarts and calls the `steepestAscent` function each time a restart is done. The `steepestAscent` function performs the Steepest Ascent Hill Climbing search.
+
+Auxiliary functions include `repeatSARR` which repeats the Steepest Ascent with Random Restart process multiple times to obtain average results.
+
+## Inputs and Outputs
+1. **steepestAscent**: The main steepest ascent algorithm.
+    - Input: `state`, `convInfo`, `idx`, `totalItr`, `minh`.
+    - Output: `current`, `h`, `count`, `convInfo`, `idx`, `totalItr`, `minh`.
+
+2. **steepestAscentRandomRestart**: Function implementing random restarts.
+    - Input: `maxItr`, `state`, `numRuns`, `numRestarts`.
+    - Output: `estimateRestarts`, `estimateSteps`, `convInfo`, `idx`.
+
+3. **repeatSARR**: Average results from multiple runs of the algorithm.
+    - Input: `numLoops`, `state`, `numRuns`, `numRestarts`.
+    - Output: `convInfo`.
+
+## Execution
+To run the algorithm, call the `repeatSARR` function with appropriate parameters. You can specify the maximum number of iterations (`maxItr`), the number of loops to average over (`numLoops`), and the number of runs and restarts per loop (`numRuns`, `numRestarts`).
+
+## License
+This project is licensed under the MIT License.
+
+# Simulated Annealing Approach 🗽
+
+## Description
+This script implements a Simulated Annealing algorithm to solve the N-Queens problem. 
+
+Simulated Annealing is a probabilistic technique for approximating the global optimum of a given function. It's a metaheuristic to approximate global optimization in a large search space. It is often used when the search space is discrete. 
+
+This specific implementation includes an optional quantum tunneling feature that helps the search jump out of local minimums and explore other areas of the search space.
+
+## How it Works
+The script works by exploring the problem space for a better state using a Simulated Annealing approach. This means that it probabilistically decides whether to move to a new state based on the difference in heuristic cost and the current 'temperature' (a metaphorical control parameter that decreases over iterations).
+
+The quantum tunneling feature is added to encourage more exploration. With a set probability, the algorithm makes a significant jump in the problem space instead of a small local move. This feature can be useful when the problem space has many local minima.
+
+The algorithm employs a heuristic cost function, h(state), which calculates the total number of conflicts in a given state. The fewer the conflicts, the better the state.
+
+## Code Structure
+The main function `simulatedAnnealing` performs the Simulated Annealing search, while the function `repeatSIM` calls the `simulatedAnnealing` function multiple times to obtain average results.
+
+## Inputs and Outputs
+1. **simulatedAnnealing**: The main Simulated Annealing algorithm.
+    - Input: `maxItr`, `state`, `numRuns`, `tunnelingProb`.
+    - Output: `convInfo`.
+
+2. **repeatSIM**: Average results from multiple runs of the algorithm.
+    - Input: `maxItr`, `numLoops`, `state`, `numRuns`, `tunnelingProb`.
+    - Output: `convInfo`.
+
+## Execution
+To run the algorithm, call the `repeatSIM` function with appropriate parameters. You can specify the maximum number of iterations (`maxItr`), the number of loops to average over (`numLoops`), and the number of runs (`numRuns`). The `tunnelingProb` parameter sets the probability of performing a quantum tunneling operation.
 
 ## License
 This project is licensed under the MIT License.
