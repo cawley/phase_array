@@ -194,7 +194,7 @@ To run the algorithm, call the `repeatSIM` function with appropriate parameters.
 ## License
 This project is licensed under the MIT License.
 
-# Meta-comparison of N-Queens Heuristic Approaches
+# Meta-comparison of N-Queens Heuristic Approaches 💗
 
 ## Description
 This script performs a comparison of several heuristic approaches for solving the N-Queens problem. It imports the following heuristic modules: Steepest Ascent Hill Climbing with Random Restart (SARR), Simulated Annealing (SIM), Quantum Simulated Annealing (QSIM), Genetic Algorithm (GA), Genetic Algorithm variant (GAv2), and Particle Swarm Optimization (PSO). It visualizes the results of these algorithms by plotting the minimum conflicts against the number of objective function calls for each algorithm, facilitating a side-by-side comparison.
