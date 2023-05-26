@@ -220,4 +220,4 @@ Before running the script, make sure all the mentioned modules (n_queens_SARR, n
 
 ## License
 This project is licensed under the MIT License.
-This markdown text can be put into a README.md file in your project directory, and it should display properly on platforms like GitHub.
+
