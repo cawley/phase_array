@@ -193,3 +193,31 @@ To run the algorithm, call the `repeatSIM` function with appropriate parameters.
 
 ## License
 This project is licensed under the MIT License.
+
+# Meta-comparison of N-Queens Heuristic Approaches
+
+## Description
+This script performs a comparison of several heuristic approaches for solving the N-Queens problem. It imports the following heuristic modules: Steepest Ascent Hill Climbing with Random Restart (SARR), Simulated Annealing (SIM), Quantum Simulated Annealing (QSIM), Genetic Algorithm (GA), Genetic Algorithm variant (GAv2), and Particle Swarm Optimization (PSO). It visualizes the results of these algorithms by plotting the minimum conflicts against the number of objective function calls for each algorithm, facilitating a side-by-side comparison.
+
+## How it Works
+The script generates a random initial state and runs each of the imported modules with this initial state. It averages the results from multiple runs of each algorithm and stores the convergence information (minimum conflicts and number of objective function calls) in separate variables for each algorithm.
+
+It then plots the convergence information for each algorithm on a single graph, with the x-axis representing the number of objective function calls and the y-axis representing the minimum number of conflicts.
+
+## Code Structure
+The main function, `main`, handles the creation of the initial state, the running of the modules, and the creation of the plot.
+
+## Inputs and Outputs
+**main**: The main function that runs everything.
+- Input: None (parameters are hardcoded)
+- Output: None (results are displayed in a plot)
+
+## Execution
+To run the script, simply execute the script in a Python environment. It will run each of the imported modules with the specified parameters, average the results, and display a plot of the results. 
+
+## Notes
+Before running the script, make sure all the mentioned modules (n_queens_SARR, n_queens_SIM, n_queens_GA, n_queens_GAv2, and n_queens_PSO) are in the same directory as the script and that all required packages are installed.
+
+## License
+This project is licensed under the MIT License.
+This markdown text can be put into a README.md file in your project directory, and it should display properly on platforms like GitHub.
