@@ -6,7 +6,6 @@ We attempt this problem with a few different optimization metaheuristics:
   - Genetic Algorithm
   - Particle Swarm Optimization
   - Simulated Annealing
-  - Steepest Ascent
   - Steepest Ascent with Random Restart
   - Quantum Annealing
 

@@ -136,7 +136,7 @@ def repeatSARR(maxItr, numLoops, state, numRuns, numRestarts):
     
     minLen = len
     convInfoFinal = convInfoFinal[:minLen]
-
+    print("Repeat SARR")
     for i in range(numLoops - 1):
         estimateRestarts, estimateSteps, convInfo, len = steepestAscentRandomRestart(maxItr, state, numRuns=100)
 

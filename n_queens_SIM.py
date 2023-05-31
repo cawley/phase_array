@@ -74,7 +74,7 @@ returns:
 def repeatSIM(maxItr, numLoops, state, numRuns, tunnelingProb=0):
     numRuns = maxItr
     convInfoFinal = simulatedAnnealing(maxItr, state, numRuns, tunnelingProb)
-
+    print("Repeat SIM")
     for i in range(numLoops - 1):
         convInfo = simulatedAnnealing(maxItr, state, numRuns, tunnelingProb)
         convInfoFinal += convInfo

@@ -97,6 +97,9 @@ def genetic_algorithm(population, r_mut, n_iter):
     [best, score] = population[0], fitness(population[0])
     h = conflicts(population[0])
     for gen in range(n_iter):
+        T = gen == 0 and 1 or (1/gen)
+        r = rand.uniform(0, 1)
+
         scores = [fitness(population[i]) for i in range(len(population))]
         totalItr += len(population)
         #check for new best
@@ -104,7 +107,12 @@ def genetic_algorithm(population, r_mut, n_iter):
             if scores[i] > score:
                 best, score = population[i], scores[i]
                 #print(">%d, new best f(%s) = %f" % (gen, population[i], scores[i]))
-        parents = [roulette_selection(population, scores) for _ in range(len(population))]
+
+        if r < T:
+            parents = [roulette_selection(population, scores) for _ in range(len(population))]
+        else:
+            parents = population.copy()
+        
         children = list()
         for i in range(0, len(parents) - 1, 2):
             p1, p2 = parents[i], parents[i+1] 
@@ -113,13 +121,15 @@ def genetic_algorithm(population, r_mut, n_iter):
             c2 = random_reset_mutation(c2, r_mut)
             children.append(c1)
             children.append(c2)
-        population = children
+        population = children.copy()
         for i in range(len(population)):
             if conflicts(population[i]) < h:
                 h = conflicts(population[i])
 
         convInfo[idx, :] = [totalItr, h]
         idx += 1
+        if max_conflicts(population[0]) == score:
+            return [best, score, h], convInfo
     return [best, score, h], convInfo
 
 def main():
@@ -165,7 +175,7 @@ returns:
 def repeatGA(maxItr, numLoops, population, mutationRate=0.15, numRuns=100):
     numRuns = maxItr // np.shape(population)[0]
     minh, convInfoFinal = genetic_algorithm(population, mutationRate, numRuns)
-
+    print("Repeat GA")
     for i in range(numLoops - 1):
         minh, convInfo = genetic_algorithm(population, mutationRate, numRuns)
 

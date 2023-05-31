@@ -91,7 +91,7 @@ returns:
 def repeatGAv2(maxItr, numLoops, population, N=8, populationSize=4, mutationRate=0.15, numRuns=100):
     numRuns = maxItr // populationSize
     minh, convInfoFinal = geneticAlgorithm(population, N, populationSize, mutationRate, numRuns)
-
+    print("Repeat GAv2")
     for i in range(numLoops - 1):
         minh, convInfo = geneticAlgorithm(population, N, populationSize, mutationRate, numRuns)
 

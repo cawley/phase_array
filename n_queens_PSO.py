@@ -63,6 +63,7 @@ def repeatPSO(maxItr, numLoops, initState, numRuns):
     n_parts = 8
     gbest, h, convInfoFinal = pso(n_sub, n_parts, n_iter)
     
+    print("Repeat PSO")
     for i in range(numLoops - 1):
         best, hv, convInfo = pso(n_sub, n_parts, n_iter)
         convInfoFinal += convInfo
