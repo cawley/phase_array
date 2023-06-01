@@ -159,7 +159,7 @@ To run the algorithm, call the `repeatSARR` function with appropriate parameters
 ## License
 This project is licensed under the MIT License.
 
-# Simulated Annealing Approach 🗽
+# Simulated Annealing Approach 🥇
 
 ## Description
 This script implements a Simulated Annealing algorithm to solve the N-Queens problem. 
