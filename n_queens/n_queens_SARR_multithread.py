@@ -135,20 +135,8 @@ def main():
     runs = 1000
     restarts = 100
     test = parallel_steepestAscentRandomRestart(n_iter, state, runs, restarts)
+
     
-    start_parallel = time.time()
-    print(parallel_steepestAscentRandomRestart(n_iter, state, runs, restarts))
-    end_parallel = time.time()
-    ty = end_parallel - start_parallel
-
-    start_normal = time.time()
-    for i in range(1000):
-        print(steepestAscentRandomRestart(n_iter, state, runs, restarts))
-    end_normal = time.time()
-
-    print("TIMES\n")
-    print(ty)
-    print(end_normal - start_normal)
 
 if __name__ == "__main__":
     main()

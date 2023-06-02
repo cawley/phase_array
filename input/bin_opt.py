@@ -25,45 +25,47 @@ def generate_bin():
         f.write(" ")
         c +=1
 
+def generate_random_binary_string(n):
+    return ''.join(rand.choice('01') for _ in range(n))
+
 def objective(state):
-    #return np.sum(state != opt_string)
     return SequenceMatcher(None, state, opt_str).ratio()
 
 def steepestAscent(state, convInfo, idx, totalItr, minh):
 
-    current = state.copy()
+    current = state
     count = 0
 
     while True:
-        neighbor = current.copy()
+        neighbor = current
         neighborH = -objective(current)
         N = len(current)
 
         #find best neighbor
         for i in range(N):
-            temp = current.copy()
+            temp = current
 
             # move down
-            while (temp[i] != 0):
+            while (temp[i] == '0'):
                 totalItr += 1
-                temp[i] -= 1
+                temp[i] = '1'
                 if -objective(temp) > neighborH:
-                    neighbor = temp.copy()
+                    neighbor = temp
                     neighborH = -objective(temp)
 
             # move up
-            while (temp[i] != N - 1):
+            while (temp[i] == '1'):
                 totalItr += 1
-                temp[i] += 1
+                temp[i] += '0'
                 if -objective(temp) > neighborH:
-                    neighbor = temp.copy()
+                    neighbor = temp
                     neighborH = -objective(temp)
 
         if neighborH <= -objective(current):
             return current, objective(state), objective(current), count, convInfo, idx, totalItr, minh
         
 
-        current = neighbor.copy()
+        current = neighbor
         count += 1
 
         if objective(current) < minh:
@@ -92,7 +94,7 @@ def steepestAscentRandomRestart(maxItr, state, numRuns=1000, numRestarts=100):
 
     for i in range(numRuns):
         # randomize the state
-        state = np.random.randint(low=0, high=N, size=(N,))
+        state = generate_random_binary_string(N)
         for j in range(numRestarts):
             arr, hInitial, currH, count, convInfo, idx, totalItr, minh = steepestAscent(state, convInfo, idx, totalItr, minh)
             steps += count
@@ -102,7 +104,7 @@ def steepestAscentRandomRestart(maxItr, state, numRuns=1000, numRestarts=100):
                 break
             else:
                 # randomize the state
-                state = np.random.randint(low=0, high=N, size=(N,))
+                state = generate_random_binary_string(N)
 
             restarts += 1
         
@@ -142,13 +144,9 @@ def main():
     n_iter = 1
     n_samp = 1
 
-    outfile = open("out.txt", "w")
-    print(inp_str)
-    print(opt_str)
-    print(inp_arr)
-    print(opt_arr)
-    print(objective(inp_str))
-    #ci_sarr = repeatSARR(n_iter, n_samp, state, 1, 100)
+    print(objective(state))
+    ci_sarr = repeatSARR(n_iter, n_samp, state, 1, 100)
+    print(ci_sarr)
     #line1, = plt.plot(ci_sarr[:, 0], ci_sarr[:, 1], label='Steepest Ascent with Random Restart')
     #plt.legend(handles=[line1])
     #plt.title('N = {} Queens, {} Max Calls, {} Iterations'.format(N, maxItr, numLoops))
