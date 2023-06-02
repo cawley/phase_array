@@ -1,7 +1,7 @@
 import numpy as np
 import random as rand
 from matplotlib import pyplot as plt
-import json
+from difflib import SequenceMatcher
 
 optfile = open("optimal_state.txt", "r")
 opt_str = optfile.read()
@@ -26,7 +26,8 @@ def generate_bin():
         c +=1
 
 def objective(state):
-    return np.sum(state != opt_string)
+    #return np.sum(state != opt_string)
+    return SequenceMatcher(None, state, opt_str).ratio()
 
 def steepestAscent(state, convInfo, idx, totalItr, minh):
 
@@ -138,23 +139,23 @@ def repeatSARR(maxItr, numLoops, state, numRuns, numRestarts):
 def main():
     generate_bin()
     state = inp_str
-    n_iter = 100
-    n_samp = 10
+    n_iter = 1
+    n_samp = 1
 
     outfile = open("out.txt", "w")
-    outfile.write(inp_str)
-    outfile.write(opt_str)
+    print(inp_str)
+    print(opt_str)
     print(inp_arr)
     print(opt_arr)
-
-    ci_sarr = repeatSARR(n_iter, n_samp, state, 100, 100)
-    line1, = plt.plot(ci_sarr[:, 0], convInfoSARR[:, 1], label='Steepest Ascent with Random Restart')
-    plt.legend(handles=[line1])
-    plt.title('N = {} Queens, {} Max Calls, {} Iterations'.format(N, maxItr, numLoops))
-    plt.xlabel("Number of Iterations")
-    plt.ylabel("Average Remaining Conflicts")
-    plt.grid()
-    plt.show()
+    print(objective(inp_str))
+    #ci_sarr = repeatSARR(n_iter, n_samp, state, 1, 100)
+    #line1, = plt.plot(ci_sarr[:, 0], ci_sarr[:, 1], label='Steepest Ascent with Random Restart')
+    #plt.legend(handles=[line1])
+    #plt.title('N = {} Queens, {} Max Calls, {} Iterations'.format(N, maxItr, numLoops))
+    #plt.xlabel("Number of Iterations")
+    #plt.ylabel("Average Remaining Conflicts")
+    #plt.grid()
+    #plt.show()
 
 #opt_arr_str = ['{:06b}'.format(num) for num in opt_arr]
 
