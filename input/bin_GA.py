@@ -62,7 +62,7 @@ def roulette_selection(population, scores):
         if r < p_state[i]:
             temp = population[i]
             return temp
-            
+
 
 # SINGLE POINT CROSSOVER BREEDING
 # https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)
@@ -98,7 +98,6 @@ def random_reset_mutation(c1, r_mut):
 
 # STANDARD GA FOR N QUEENS WITH ALL PARAMS MENTIONED  
 def genetic_algorithm(population, r_mut, n_iter):
-
     convInfo = np.zeros((n_iter, 2))
     idx = 0
     totalItr = 0
@@ -113,7 +112,7 @@ def genetic_algorithm(population, r_mut, n_iter):
         totalItr += len(population)
         #check for new best
         for i in range(len(population)):
-            if scores[i] < score:
+            if scores[i] > score:
                 best, score = population[i], scores[i]
                 #print(">%d, new best f(%s) = %f" % (gen, population[i], scores[i]))
 
@@ -142,16 +141,19 @@ def genetic_algorithm(population, r_mut, n_iter):
     return [best, score, h], convInfo
 
 def main():
-    print(fitness(state))
     N = 8
     length = len(opt_arr)
     population = [generate_random_binary_string(length) for _ in range(N)] 
     r_mut = .40
-    n_iter = 1000
+    n_iter = 10000000
 
-    [best, score, h], convInfo = genetic_algorithm(population, r_mut, n_iter)
+    #[best, score, h], convInfo = genetic_algorithm(population, r_mut, n_iter)
+    best = population[0]
+    score = fitness(population[0])
     print(best)
     print(score)
+
+
 
 if __name__ == "__main__":
     main()
