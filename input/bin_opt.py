@@ -5,10 +5,16 @@ from difflib import SequenceMatcher
 
 optfile = open("optimal_state.txt", "r")
 opt_str = optfile.read()
-opt_arr = np.fromstring(opt_str, dtype=int, sep = ' ')
+opt_lst = list(opt_str)
+opt_arr = [i for i in opt_lst if (i == '0' or i == '1')]
+
 inpfile = open("in.txt", "r")
 inp_str = inpfile.read()
-inp_arr = np.fromstring(inp_str, dtype=int, sep = ' ')
+
+def generate_random_binary_string(n):
+    return ''.join(rand.choice('01') for _ in range(n))
+
+state = generate_random_binary_string(len(opt_arr))
 
 def generate_bin():
     f = open("in.txt", "w")
@@ -24,9 +30,6 @@ def generate_bin():
         f.write(s)
         f.write(" ")
         c +=1
-
-def generate_random_binary_string(n):
-    return ''.join(rand.choice('01') for _ in range(n))
 
 def objective(state):
     return SequenceMatcher(None, state, opt_str).ratio()
@@ -140,14 +143,15 @@ def repeatSARR(maxItr, numLoops, state, numRuns, numRestarts):
     return convInfoFinal
 
 def main():
-    generate_bin()
-    state = inp_str
-    n_iter = 1
-    n_samp = 1
+    n_iter = 100
+    n_samp = 100
 
     print(objective(state))
-    ci_sarr = repeatSARR(n_iter, n_samp, state, 1, 100)
-    print(ci_sarr)
+
+    print(state)
+    print(opt_arr)
+    #ci_sarr = repeatSARR(n_iter, n_samp, state, 100, 100)
+    #print(ci_sarr)
     #line1, = plt.plot(ci_sarr[:, 0], ci_sarr[:, 1], label='Steepest Ascent with Random Restart')
     #plt.legend(handles=[line1])
     #plt.title('N = {} Queens, {} Max Calls, {} Iterations'.format(N, maxItr, numLoops))
