@@ -32,6 +32,7 @@ def objective(state):
     return SequenceMatcher(None, state, opt_str).ratio()
 
 def steepestAscent(state, convInfo, idx, totalItr, minh):
+    state = list(state)
 
     current = state
     count = 0
