@@ -2,40 +2,18 @@ import math as math
 import random as rand
 import numpy as np
 
-# CONFLICT DEFINITION
 def conflict(row1, col1, row2, col2):
-    """Would putting two queens in (row1, col1) and (row2, col2) conflict?"""
-    
-    return (row1 == row2 or                 # same row
-            col1 == col2 or                 # same column 
-            row1 - col1 == row2 - col2 or   # same \ diagonal
-            row1 + col1 == row2 + col2)     # same / diagonal
+    return (row1 == row2 or col1 == col2 or row1 - col1 == row2 - col2 or row1 + col1 == row2 + col2)
 
-# COUNT QUANTITY OF CONFLICTS PER STATE
 def conflicts(state):
-    num_conflicts = 0
     N = len(state)
-    for c1 in range(N):
-        for c2 in range(c1 + 1, N):
-            num_conflicts += conflict(state[c1], c1, state[c2], c2)
-    return num_conflicts
+    return sum(conflict(state[c1], c1, state[c2], c2) for c1 in range(N) for c2 in range(c1 + 1, N))
 
-# MAX CONFLICTS FOR N QUEENS
 def max_conflicts(state):
-    temp = state.copy()
-    for i in range(len(temp)):
-        temp[i] = 0
-    return conflicts(temp)
+    return conflicts([0]*len(state))
 
-# SOLUTION QUALITY EVALUATION
-def fitness(state_in):
-    state = state_in.copy()
-    num_conflicts = 0
-    N = len(state)
-    for c1 in range(N):
-        for c2 in range(c1 + 1, N):
-            num_conflicts += conflict(state[c1], c1, state[c2], c2)
-    return (max_conflicts(state) - num_conflicts)
+def fitness(state):
+    return (conflicts([0]*len(state)) - conflicts(state))
 
 # SELECTION BASED ON FITNESS PROPORTIONATE ROULETTE 
 # https://en.wikipedia.org/wiki/Fitness_proportionate_selection

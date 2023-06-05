@@ -1,7 +1,7 @@
 import numpy as np
 import random as rand
 from matplotlib import pyplot as plt
-from difflib import SequenceMatcher
+import distance as ds
 
 optfile = open("optimal_state.txt", "r")
 opt_str = optfile.read()
@@ -14,7 +14,8 @@ inp_str = inpfile.read()
 def generate_random_binary_string(n):
     return ''.join(rand.choice('01') for _ in range(n))
 
-state = generate_random_binary_string(len(opt_arr))
+state_str = generate_random_binary_string(len(opt_arr))
+state = list(state_str)
 
 def generate_bin():
     f = open("in.txt", "w")
@@ -32,7 +33,7 @@ def generate_bin():
         c +=1
 
 def objective(state):
-    return SequenceMatcher(None, state, opt_str).ratio()
+    return ds.levenshtein(state, opt_arr)
 
 def steepestAscent(state, convInfo, idx, totalItr, minh):
     state = list(state)
@@ -78,7 +79,7 @@ def steepestAscent(state, convInfo, idx, totalItr, minh):
         convInfo[idx, :] = [totalItr, minh]
         idx += 1
 
-def steepestAscentRandomRestart(maxItr, state, numRuns=1000, numRestarts=100):
+def steepestAscentRandomRestart(maxItr, state, numRuns=10, numRestarts=10):
 
     convInfo = np.zeros((10000, 2))
     idx = 0
@@ -98,7 +99,8 @@ def steepestAscentRandomRestart(maxItr, state, numRuns=1000, numRestarts=100):
 
     for i in range(numRuns):
         # randomize the state
-        state = generate_random_binary_string(N)
+        state_str = generate_random_binary_string(len(opt_arr))
+        state = list(state_str)
         for j in range(numRestarts):
             arr, hInitial, currH, count, convInfo, idx, totalItr, minh = steepestAscent(state, convInfo, idx, totalItr, minh)
             steps += count
@@ -108,7 +110,8 @@ def steepestAscentRandomRestart(maxItr, state, numRuns=1000, numRestarts=100):
                 break
             else:
                 # randomize the state
-                state = generate_random_binary_string(N)
+                state_str = generate_random_binary_string(len(opt_arr))
+                state = list(state_str)
 
             restarts += 1
         
@@ -143,15 +146,13 @@ def repeatSARR(maxItr, numLoops, state, numRuns, numRestarts):
     return convInfoFinal
 
 def main():
-    n_iter = 100
-    n_samp = 100
+    n_iter = 10
+    n_samp = 10
 
     print(objective(state))
 
-    print(state)
-    print(opt_arr)
-    #ci_sarr = repeatSARR(n_iter, n_samp, state, 100, 100)
-    #print(ci_sarr)
+    ci_sarr = repeatSARR(n_iter, n_samp, state, 10, 10)
+    print(ci_sarr)
     #line1, = plt.plot(ci_sarr[:, 0], ci_sarr[:, 1], label='Steepest Ascent with Random Restart')
     #plt.legend(handles=[line1])
     #plt.title('N = {} Queens, {} Max Calls, {} Iterations'.format(N, maxItr, numLoops))
@@ -160,9 +161,14 @@ def main():
     #plt.grid()
     #plt.show()
 
-#opt_arr_str = ['{:06b}'.format(num) for num in opt_arr]
 
 
 
 if __name__ == "__main__":
     main()
+# May Be Useful Later
+#from difflib import SequenceMatcher
+#from Bio.Align import PairwiseAligner
+#return SequenceMatcher(None, state, opt_str).ratio()
+#return PairwiseAligner.score(state, opt_arr)
+#opt_arr_str = ['{:06b}'.format(num) for num in opt_arr]
