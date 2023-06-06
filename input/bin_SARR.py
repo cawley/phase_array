@@ -61,12 +61,13 @@ def steepestAscent(state, convInfo, idx, totalItr, minh):
             # move up
             while (temp[i] == '1'):
                 totalItr += 1
-                temp[i] += '0'
+                temp[i] = '0'
                 if objective(temp) < neighborH:
                     neighbor = temp
                     neighborH = objective(temp)
 
         if neighborH >= objective(current):
+            print(current, state, objective(state))
             return current, objective(state), objective(current), count, convInfo, idx, totalItr, minh
         
         current = neighbor
