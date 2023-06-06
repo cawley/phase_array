@@ -43,7 +43,7 @@ def steepestAscent(state, convInfo, idx, totalItr, minh):
 
     while True:
         neighbor = current
-        neighborH = -objective(current)
+        neighborH = objective(current)
         N = len(current)
 
         #find best neighbor
@@ -54,22 +54,21 @@ def steepestAscent(state, convInfo, idx, totalItr, minh):
             while (temp[i] == '0'):
                 totalItr += 1
                 temp[i] = '1'
-                if -objective(temp) > neighborH:
+                if objective(temp) < neighborH:
                     neighbor = temp
-                    neighborH = -objective(temp)
+                    neighborH = objective(temp)
 
             # move up
             while (temp[i] == '1'):
                 totalItr += 1
                 temp[i] += '0'
-                if -objective(temp) > neighborH:
+                if objective(temp) < neighborH:
                     neighbor = temp
-                    neighborH = -objective(temp)
+                    neighborH = objective(temp)
 
-        if neighborH <= -objective(current):
+        if neighborH >= objective(current):
             return current, objective(state), objective(current), count, convInfo, idx, totalItr, minh
         
-
         current = neighbor
         count += 1
 
