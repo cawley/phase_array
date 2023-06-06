@@ -59,8 +59,8 @@ def roulette_selection(population, scores):
 def breed(p1, p2):
     pivot1 = rand.randint(1, int(len(p1)/2) - 2)
     pivot2 = rand.randint(int(len(p1)/2), int(len(p1)) - 2)
-    c1 = np.append(p1[:pivot1], p2[pivot2:])
-    c2 = np.append(p2[:pivot2], p1[pivot1:])
+    c1 = np.append(p1[:pivot1], p2[pivot1:])
+    c2 = np.append(p2[:pivot2], p1[pivot2:])
     return [c1, c2]
 
 # SWAP MUTATION GA
