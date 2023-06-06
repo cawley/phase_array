@@ -33,7 +33,7 @@ def generate_bin():
         c +=1
 
 def objective(state):
-    return ds.levenshtein(state, opt_arr)
+    return sum(s != o for s, o in zip(state, opt_arr))
 
 def steepestAscent(state, convInfo, idx, totalItr, minh):
     state = list(state)
@@ -75,11 +75,12 @@ def steepestAscent(state, convInfo, idx, totalItr, minh):
 
         if objective(current) < minh:
             minh = objective(current)
+            print(minh)
 
         convInfo[idx, :] = [totalItr, minh]
         idx += 1
 
-def steepestAscentRandomRestart(maxItr, state, numRuns=10, numRestarts=10):
+def steepestAscentRandomRestart(maxItr, state, numRuns=100, numRestarts=100):
 
     convInfo = np.zeros((10000, 2))
     idx = 0
@@ -146,12 +147,12 @@ def repeatSARR(maxItr, numLoops, state, numRuns, numRestarts):
     return convInfoFinal
 
 def main():
-    n_iter = 10
-    n_samp = 10
+    n_iter = 100
+    n_samp = 100
 
     print(objective(state))
 
-    ci_sarr = repeatSARR(n_iter, n_samp, state, 10, 10)
+    ci_sarr = repeatSARR(n_iter, n_samp, state, 100, 100)
     print(ci_sarr)
     #line1, = plt.plot(ci_sarr[:, 0], ci_sarr[:, 1], label='Steepest Ascent with Random Restart')
     #plt.legend(handles=[line1])

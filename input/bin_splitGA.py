@@ -1,9 +1,9 @@
 import numpy as np
 import random as rand
-from matplotlib import pyplot as plt
 import math
 from collections import Counter
 from numpy import nonzero
+from concurrent.futures import ProcessPoolExecutor
 
 optfile = open("optimal_state.txt", "r")
 opt_str = optfile.read()
@@ -19,18 +19,20 @@ def generate_random_binary_string(n):
 state_str = generate_random_binary_string(len(opt_arr))
 state = list(state_str)
 
-'''
-# This fitness function is defined as the cosine between the angles that these two vectors create
-def fitness(state):
-    # state as compared to opt_arr 
-    c1 = Counter(state)
-    c2 = Counter(opt_arr)
-    terms = set(c1).union(c2)
-    dotprod = sum(c1.get(k, 0) * c2.get(k, 0) for k in terms)
-    magSt = math.sqrt(sum(c1.get(k, 0)**2 for k in terms))
-    magOp = math.sqrt(sum(c2.get(k, 0)**2 for k in terms))
-    return dotprod / (magSt * magOp)
-'''
+def generate_bin():
+    f = open("in.txt", "w")
+    c = 1
+    for _ in range(256):
+        s = ""
+        for _ in range(6):
+            r = rand.uniform(0, 1)
+            if r > .5:
+                s += "1"
+            else:
+                s += "0"        
+        f.write(s)
+        f.write(" ")
+        c +=1
 
 def fitness(state):
     return sum(s != o for s, o in zip(state, opt_arr))
@@ -54,28 +56,12 @@ def roulette_selection(population, scores):
             temp = population[i]
             return temp
 
-# SINGLE POINT CROSSOVER BREEDING
-# https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)
 def breed(p1, p2):
     pivot = rand.randint(1, len(p1) - 2)
     c1 = np.append(p1[:pivot], p2[pivot:])
     c2 = np.append(p2[:pivot], p1[pivot:])
     return [c1, c2]
 
-# SWAP MUTATION GA
-# https://en.wikipedia.org/wiki/Mutation_(genetic_algorithm)
-def swapmutation(c1, r_mut):
-    r = rand.uniform(0, 1)
-    for _ in range(len(c1[0])):
-        if r < r_mut:
-            rpos1, rpos2 = rand.randint(0, len(c1[0])), rand.randint(0, len(c1[0]))
-            temp = c1[0][rpos1]
-            c1[0][rpos1] = c1[0][rpos2]
-            c1[0][rpos2] = temp
-    return c1
-
-# RANDOM RESET MUTATION
-# https://www.geeksforgeeks.org/mutation-algorithms-for-string-manipulation-ga/
 def random_reset_mutation(c1, r_mut):
     for i in range (len(c1)):
         r = rand.uniform(0, 1)
@@ -86,7 +72,10 @@ def random_reset_mutation(c1, r_mut):
                 c1[i] = '1'
     return c1
 
-# STANDARD GA FOR N QUEENS WITH ALL PARAMS MENTIONED  
+def split_state(state, n):
+    for i in range(0, len(state), n):
+        yield state[i:i + n]
+
 def genetic_algorithm(population, r_mut, n_iter):
     convInfo = np.zeros((n_iter, 2))
     idx = 0
@@ -130,17 +119,25 @@ def genetic_algorithm(population, r_mut, n_iter):
             return [best, score, h], convInfo
     return [best, score, h], convInfo
 
+from functools import partial
+
+def run_ga(r_mut, n_iter, population_part):
+    return genetic_algorithm(population_part, r_mut, n_iter)
+
 def main():
     N = 8
     length = len(opt_arr)
     population = [generate_random_binary_string(length) for _ in range(N)] 
-    r_mut = .001
+    r_mut = .1
     n_iter = 1500
-    print(fitness(population[0]))
-    [best, score, h], convInfo = genetic_algorithm(population, r_mut, n_iter)
-    print(best)
-    print(score)
 
+    split_population = list(split_state(population[0], int(len(population[0])/N)))
+
+    with ProcessPoolExecutor() as executor:
+        func = partial(run_ga, r_mut, n_iter)
+        optimized_arrays = list(executor.map(func, split_population))
+
+    return optimized_arrays
 
 if __name__ == "__main__":
-    main()
+    print(main())
