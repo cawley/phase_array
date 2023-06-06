@@ -57,9 +57,10 @@ def roulette_selection(population, scores):
 # SINGLE POINT CROSSOVER BREEDING
 # https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)
 def breed(p1, p2):
-    pivot = rand.randint(1, len(p1) - 2)
-    c1 = np.append(p1[:pivot], p2[pivot:])
-    c2 = np.append(p2[:pivot], p1[pivot:])
+    pivot1 = rand.randint(1, int(len(p1)/2) - 2)
+    pivot2 = rand.randint(int(len(p1)/2), int(len(p1)) - 2)
+    c1 = np.append(p1[:pivot1], p2[pivot2:])
+    c2 = np.append(p2[:pivot2], p1[pivot1:])
     return [c1, c2]
 
 # SWAP MUTATION GA
@@ -126,16 +127,16 @@ def genetic_algorithm(population, r_mut, n_iter):
 
         convInfo[idx, :] = [totalItr, h]
         idx += 1
-        if fitness(population[0]) == 0:
+        if fitness(best) == 0:
             return [best, score, h], convInfo
     return [best, score, h], convInfo
 
 def main():
-    N = 8
+    N = 16
     length = len(opt_arr)
     population = [generate_random_binary_string(length) for _ in range(N)] 
     r_mut = .001
-    n_iter = 1500
+    n_iter = 15000
     print(fitness(population[0]))
     [best, score, h], convInfo = genetic_algorithm(population, r_mut, n_iter)
     print(best)
