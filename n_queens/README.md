@@ -1,5 +1,5 @@
 # phase_array
-### Hi! :blush: Welcome to the phase_array README.md! 😲 We hope this helps! 😆
+### Hi! :blush: Welcome to the n_queens README.md! 😲 
 This repository represents an attempt at general solution to optimal arrangement of nodes in a hypothetical phase array.
 We reduce this problem (a lot) to a famous, easy-to-grasp and NP-hard search problem NQueens. 
 We attempt this problem with a few different optimization metaheuristics:
