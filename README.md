@@ -20,7 +20,7 @@ The bin folder contains our work on a closer representation of the real problem.
 - `n_queens/` - Contains the implementation and tests for metaheuristic algorithms on the NQueens problem.
 - `bin/` - Contains tests of the best-performing algorithms from `n_queens/` on a more representative problem.
 
-## Usage 
+## Usage 😳
 
 - To run the NQueens problem, navigate to the `n_queens/` directory and run the Python script corresponding to the algorithm you want to test.
 - To test the algorithms on the representative problem, navigate to the `bin/` directory and run the Python script corresponding to the algorithm you want to test.
