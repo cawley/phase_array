@@ -9,7 +9,7 @@ Given the complex and multidimensional nature of our problem, we don't have a we
 
 To evaluate the performance of these metaheuristic algorithms, we demonstrate their effectiveness on the classic NP-hard NQueens problem because of its multidimensional and computationally heavy nature. We use several different metaheuristics (Particle Swarm Optimization (PSO), Genetic Algorithm (GA), Simulated Annealing, Steepest Ascent Random Restart, and Quantum Annealing) and rate them based on their calls to the fitness function and convergence to the optimal solution.
 
-## Solution Approach 
+## Solution Approach 👩‍🔬
 
 The main bottleneck in our problem is the calls to the fitness function because each call requires us to loop through the entire system: from the beamformer to grab the state, through the Software Defined Radio (SDR) to digitize the signal, and then back to the Python program to rate its efficacy. 
 
