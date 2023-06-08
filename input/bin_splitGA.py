@@ -41,10 +41,27 @@ def roulette_selection(population, scores):
     return population[-1]
 
 def breed(p1, p2):
-    pivot = rand.randint(3, p1.size - 4)
+    pivot = rand.randint(1, int(p1.size/2))
+    pivot2 = rand.randint(int(p1.size/2), p1.size - 2)
     c1 = np.concatenate((p1[:pivot], p2[pivot:]))
-    c2 = np.concatenate((p2[:pivot], p1[pivot:]))
+    c2 = np.concatenate((p2[:pivot2], p1[pivot2:]))
     return [c1, c2]
+
+def sextuple_breeding(p1, p2, p3, p4, p5, p6):
+    pivot1 = rand.randint(1, int(1 * p1.size/5))
+    pivot2 = rand.randint(int(1 * p1.size/5), int(2 * p1.size/5))
+    pivot3 = rand.randint(int(2 * p1.size/5), int(3 * p1.size/5))
+    pivot4 = rand.randint(int(3 * p1.size/5), int(4 * p1.size/5))
+    pivot5 = rand.randint(int(4 * p1.size/5), p1.size - 1)
+
+    c1 = np.concatenate((p1[:pivot1], p2[pivot1:pivot2], p3[pivot2:pivot3], p4[pivot3:pivot4], p5[pivot4:pivot5], p6[pivot5:pivot6]))
+    c2 = np.concatenate((p2[:pivot1], p3[pivot1:pivot2], p4[pivot2:pivot3], p5[pivot3:pivot4], p6[pivot4:pivot5], p1[pivot5:pivot6]))
+    c3 = np.concatenate((p3[:pivot1], p4[pivot1:pivot2], p5[pivot2:pivot3], p6[pivot3:pivot4], p1[pivot4:pivot5], p2[pivot5:pivot6]))
+    c4 = np.concatenate((p4[:pivot1], p5[pivot1:pivot2], p6[pivot2:pivot3], p1[pivot3:pivot4], p2[pivot4:pivot5], p3[pivot5:pivot6]))
+    c5 = np.concatenate((p5[:pivot1], p6[pivot1:pivot2], p1[pivot2:pivot3], p2[pivot3:pivot4], p3[pivot4:pivot5], p4[pivot5:pivot6]))
+    c6 = np.concatenate((p6[:pivot1], p1[pivot1:pivot2], p2[pivot2:pivot3], p3[pivot3:pivot4], p4[pivot4:pivot5], p5[pivot5:pivot6]))
+
+    return [c1, c2, c3, c4, c5, c6]
 
 def swapmutation(c1, r_mut):
     r = rand.uniform(0, 1)
@@ -93,7 +110,7 @@ def genetic_algorithm(population, r_mut, n_iter):
         for i in range(0, len(parents) - 1, 2):
             p1, p2 = parents[i], parents[i+1] 
             c1, c2 = breed(p1, p2)
-            c1 = random_reset_mutation(c1, r_mut)
+            c1 = swapmutation(c1, r_mut)
             c2 = random_reset_mutation(c2, r_mut)
             children.append(c1)
             children.append(c2)
@@ -105,20 +122,19 @@ def genetic_algorithm(population, r_mut, n_iter):
                 h = fitness(population[i])
 
         idx += 1
-        assert all(individual.size == population[0].size for individual in population)
         if fitness(best) == 0:
-            pool.close() # Close the pool when we're done
+            pool.close()
             return [best, score, h]
     
-    pool.close() # Close the pool when we're done
+    pool.close()
     return [best, score, h]
 
 
 def main():
-    N = 80
+    N = 150
     length = 1536
     population = [generate_random_binary_string(length) for _ in range(N)] 
-    r_mut = .4
+    r_mut = .2
     n_iter = 1000
     print(fitness(population[0]))
     [best, score, h] = genetic_algorithm(population, r_mut, n_iter)
