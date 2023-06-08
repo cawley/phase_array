@@ -9,7 +9,7 @@ Given the complex and multidimensional nature of our problem, we don't have a we
 
 To evaluate the performance of these metaheuristic algorithms, we demonstrate their effectiveness on the classic NP-hard NQueens problem because of its multidimensional and computationally heavy nature. We use several different metaheuristics (Particle Swarm Optimization (PSO), Genetic Algorithm (GA), Simulated Annealing, Steepest Ascent Random Restart, and Quantum Annealing) and rate them based on their calls to the fitness function and convergence to the optimal solution.
 
-## Solution Approach 
+## Solution Approach 👩‍🔬
 
 The main bottleneck in our problem is the calls to the fitness function because each call requires us to loop through the entire system: from the beamformer to grab the state, through the Software Defined Radio (SDR) to digitize the signal, and then back to the Python program to rate its efficacy. 
 
@@ -20,7 +20,7 @@ The bin folder contains our work on a closer representation of the real problem.
 - `n_queens/` - Contains the implementation and tests for metaheuristic algorithms on the NQueens problem.
 - `bin/` - Contains tests of the best-performing algorithms from `n_queens/` on a more representative problem.
 
-## Usage 
+## Usage 😳
 
 - To run the NQueens problem, navigate to the `n_queens/` directory and run the Python script corresponding to the algorithm you want to test.
 - To test the algorithms on the representative problem, navigate to the `bin/` directory and run the Python script corresponding to the algorithm you want to test.
