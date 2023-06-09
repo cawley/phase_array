@@ -9,6 +9,21 @@ Given the complex and multidimensional nature of our problem, we don't have a we
 
 To evaluate the performance of these metaheuristic algorithms, we demonstrate their effectiveness on the classic NP-hard NQueens problem because of its multidimensional and computationally heavy nature. We use several different metaheuristics (Particle Swarm Optimization (PSO), Genetic Algorithm (GA), Simulated Annealing, Steepest Ascent Random Restart, and Quantum Annealing) and rate them based on their calls to the fitness function and convergence to the optimal solution.
 
+## Common Approaches
+
+ - Maximum likelihood beamformer
+   - This approach models noise as a stationary Gaussian white random process and the signal waveform as deterministic and unknown. 
+
+- Bartlett beamformer
+  - The Bartlett beamformer extends conventional spectral analysis to the Directional Arrival Assessment (DAA). The angle that maximizes the spectral power is used to estimate the angle of arrival. 
+- Capon beamformer
+  - Also known as the minimum-variance distortionless response (MVDR) beamforming algorithm, the Capon beamformer offers better resolution than the Bartlett approach. However, it has higher complexity due to the need for full-rank matrix inversion. Recent advances in GPU computing have made real-time Capon beamforming more feasible. 
+- MUSIC beamformer
+  - The MUSIC (MUltiple SIgnal Classification) beamforming algorithm starts by decomposing the covariance matrix for both the signal and noise parts. It uses the noise sub-space of the spatial covariance matrix in the denominator of the Capon algorithm, thus known as subspace           beamformer. This approach provides better Direction of Arrival (DOA) estimation compared to the Capon beamformer. The ESPRIT algorithm can be used as an alternative approach.
+- Artificial Intelligence
+  - The ongoing trend in digital signal processing for DAA involves the use of Artificial Intelligence technologies.
+
+
 ## Solution Approach 👩‍🔬
 
 The main bottleneck in our problem is the calls to the fitness function because each call requires us to loop through the entire system: from the beamformer to grab the state, through the Software Defined Radio (SDR) to digitize the signal, and then back to the Python program to rate its efficacy. 
