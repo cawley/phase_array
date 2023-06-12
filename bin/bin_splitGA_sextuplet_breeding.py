@@ -5,6 +5,7 @@ import math
 from collections import Counter
 from numpy import nonzero
 from functools import partial
+import difflib
 import time
 
 def split_array(arr):
@@ -22,15 +23,14 @@ opt_str = optfile.read()
 opt_arr = np.array([i for i in opt_str if (i == '0' or i == '1')])
 o1, o2, o3, o4 = split_array(opt_arr)
 
-
 inpfile = open("in.txt", "r")
 inp_str = inpfile.read()
 
 def generate_random_binary_string(n):
-    copy = opt_arr
+    copy = opt_arr.copy()
     for i in range(0, len(copy), 10):
         if copy[i] == '1':
-            copy[i] == '0'
+            copy[i] = '0'
         else: copy[i] = '1'
     return copy
 
@@ -63,10 +63,10 @@ def breed(p1, p2):
 
 def sextuple_breeding(p1, p2, p3, p4, p5, p6):
     pivot1 = rand.randint(0, int(1 * p1.size/6))
-    pivot2 = rand.randint(int(1 * p1.size/6), int(2 * p1.size/6))
-    pivot3 = rand.randint(int(2 * p1.size/6), int(3 * p1.size/6))
-    pivot4 = rand.randint(int(3 * p1.size/6), int(4 * p1.size/6))
-    pivot5 = rand.randint(int(4 * p1.size/6), int(5 * p1.size/6))
+    pivot2 = rand.randint(int(1 * p1.size/6)+1, int(2 * p1.size/6))
+    pivot3 = rand.randint(int(2 * p1.size/6)+1, int(3 * p1.size/6))
+    pivot4 = rand.randint(int(3 * p1.size/6)+1, int(4 * p1.size/6))
+    pivot5 = rand.randint(int(4 * p1.size/6)+1, int(5 * p1.size/6))
 
     c1 = np.concatenate((p1[:pivot1], p2[pivot1:pivot2], p3[pivot2:pivot3], p4[pivot3:pivot4], p5[pivot4:pivot5], p6[pivot5:]))
     c2 = np.concatenate((p2[:pivot1], p3[pivot1:pivot2], p4[pivot2:pivot3], p5[pivot3:pivot4], p6[pivot4:pivot5], p1[pivot5:]))
@@ -207,18 +207,23 @@ def main():
     #[b5, s5, h5] = genetic_algorithm(pop1, r_mut, n_iter)
     #[b6, s6, h6] = genetic_algorithm(pop1, r_mut, n_iter)
 
-    [b1_2, s1_2, h1_2] = genetic_algorithm(np.concatenate((b1, b2)), r_mut, n_iter, np.concatenate((o1, o2)))
-    [b2_2, s2_2, h3_2] = genetic_algorithm(np.concatenate((b3, b4)), r_mut, n_iter, np.concatenate((o3, o4)))
+    b1_2 = np.concatenate((b1, b2))
+    b2_2 = np.concatenate((b3, b4))
+    o1_2 = np.concatenate((o1, o2))
+    o2_2 = np.concatenate((o3, o4))
+
+    #[b1_2, s1_2, h1_2] = genetic_algorithm(b1_2, r_mut, n_iter, o1_2)
+    #[b2_2, s2_2, h3_2] = genetic_algorithm(b2_2, r_mut, n_iter, o2_2)
     #[b3_2, s3_2, h3_2] = genetic_algorithm(np.concatenate((b5, b6)), r_mut, n_iter)
 
-    [b1_3, s1_3, h1_3] = genetic_algorithm(np.concatenate((b1_2, b2_2)), r_mut, n_iter, opt_arr)
+    #[b1_3, s1_3, h1_3] = genetic_algorithm(np.concatenate((b1_2, b2_2)), r_mut, n_iter, opt_arr)
     #[b2_3, s1_3, h1_3] = genetic_algorithm(np.concatenate((b2_2, b2_3)), r_mut, n_iter)
 
     #[best, score, h] = genetic_algorithm(np.concatenate((b1_3, b2_3)), r_mut, n_iter)
 
-    [best, score, h] = genetic_algorithm(np.concatenate((b1_3, b2_3)), r_mut, n_iter)
-    print(best)
-    print(score)
+    #[best, score, h] = genetic_algorithm(np.concatenate((b1_3, b2_3)), r_mut, n_iter)
+    #print(best)
+    #print(score)
 
     end_time = time.time()
     elapsed_time = end_time - start_time
