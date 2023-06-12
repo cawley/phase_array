@@ -16,7 +16,12 @@ inpfile = open("in.txt", "r")
 inp_str = inpfile.read()
 
 def generate_random_binary_string(n):
-    return np.array([rand.choice('01') for _ in range(n)])
+    copy = opt_arr
+    for i in range(0, len(copy), 10):
+        if copy[i] == '1':
+            copy[i] == '0'
+        else: copy[i] = '1'
+    return copy
 
 fitness_dict = {}
 
@@ -47,7 +52,8 @@ def breed(p1, p2):
     return [c1, c2]
 
 def sextuple_breeding(p1, p2, p3, p4, p5, p6):
-    pivot1 = rand.randint(1, int(1 * p1.size/6))
+    print(p1.size)
+    pivot1 = rand.randint(0, int(1 * p1.size/6))
     pivot2 = rand.randint(int(1 * p1.size/6), int(2 * p1.size/6))
     pivot3 = rand.randint(int(2 * p1.size/6), int(3 * p1.size/6))
     pivot4 = rand.randint(int(3 * p1.size/6), int(4 * p1.size/6))
@@ -106,7 +112,7 @@ def genetic_algorithm(population, r_mut, n_iter):
         parents = [roulette_selection(population, scores) for _ in range(len(population))]
 
         children = list()
-        for i in range(0, len(parents) - 1, 6):
+        for i in range(0, len(parents) - 6, 6):
             p1, p2, p3, p4, p5, p6 = parents[i], parents[i+1], parents[i+2], parents[i+3], parents[i+4], parents[i+5]
             c1, c2, c3, c4, c5, c6 = sextuple_breeding(p1, p2, p3, p4, p5, p6)
             c1 = swapmutation(c1, r_mut)
@@ -160,43 +166,84 @@ def parallel_genetic_algorithms(population, r_mut, n_iter):
 
     return b_values, s_values, h_values
 
+def split_2d_list(big_list):
+    # Initialize 4 empty lists
+    pop1, pop2, pop3, pop4 = [], [], [], []
+    
+    # Calculate the quarter indices
+    s1, s2, s3 = len(big_list[0]) // 4, len(big_list[0]) // 2, len(big_list[0]) * 3 // 4
+
+    # Iterate through each list in the big_list
+    for lst in big_list:
+        # Append the respective quarters to each smaller list
+        pop1.append(lst[:s1])
+        pop2.append(lst[s1:s2])
+        pop3.append(lst[s2:s3])
+        pop4.append(lst[s3:])
+
+    # Return the transposed 4 smaller lists
+    return list(map(list, zip(*pop1))), list(map(list, zip(*pop2))), list(map(list, zip(*pop3))), list(map(list, zip(*pop4)))
+
+# Example usage
+big_list = [[1,2,3,4], [1,2,3,4], [1,2,3,4]]
+pop1, pop2, pop3, pop4 = split_2d_list(big_list)
+print(pop1)
+print(pop2)
+print(pop3)
+print(pop4)
+
 def main():
-    N = 150
+    N = 152
     length = 1536
     population = np.array([generate_random_binary_string(length) for _ in range(N)])
     r_mut = .2
     n_iter = 1000
 
-    print(fitness(population[0]))
+    #s1, s2, s3, s4, s5 = int(population.size/6), int(2 * population.size/6), int(3 * population.size/6), int(4 * population.size/6), int(5 * population.size/6)
+    s1, s2, s3 = int(population[0].size/4), int(2 * population[0].size/4), int(3 * population[0].size/4)
+    pop1, pop2, pop3, pop4 = [], [], [], []
+    for i in range(0, s1):
+        print(i)
+        pop1.append(population[i])
+    for i in range(s1, s2):
+        pop2.append(population[i])
+    for i in range(s2, s3):
+        pop3.append(population[i])
+    for i in range(s3, len(population[0])):
+        pop4.append(population[i])
+
+    print(len(pop1), len(pop2), len(pop3), len(pop4))
+    #pop2 = population[s1:s2]
+    #pop3 = population[s2:s3]
+    #pop4 = population[s3:]
+    #pop5 = population[s4:s5]
+    #pop6 = population[s5:]
+
+    #pops = [pop1, pop2, pop3, pop4]#, pop5, pop6]
+
+    #print(len(pop1))
+    #print(pop2)
     
-    s1, s2, s3, s4, s5 = int(population.size/6), int(2 * population.size/6), int(3 * population.size/6), int(4 * population.size/6), int(5 * population.size/6)
-    pop1 = population[:s1]
-    pop2 = population[s1:s2]
-    pop3 = population[s2:s3]
-    pop4 = population[s3:s4]
-    pop5 = population[s4:s5]
-    pop6 = population[s5:]
+    #[b1, s1, h1] = genetic_algorithm(pop1, r_mut, n_iter)
+    #[b2, s2, h2] = genetic_algorithm(pop2, r_mut, n_iter)
+    #print(b2)
+    #[b3, s3, h3] = genetic_algorithm(pop3, r_mut, n_iter)
+    #[b4, s4, h4] = genetic_algorithm(pop4, r_mut, n_iter)
+    #[b5, s5, h5] = genetic_algorithm(pop1, r_mut, n_iter)
+    #[b6, s6, h6] = genetic_algorithm(pop1, r_mut, n_iter)
 
-    pops = [pop1, pop2, pop3, pop4, pop5, pop6]
-    
-    [b1, s1, h1] = genetic_algorithm(pop1, r_mut, n_iter)
-    [b2, s2, h2] = genetic_algorithm(pop1, r_mut, n_iter)
-    [b3, s3, h3] = genetic_algorithm(pop1, r_mut, n_iter)
-    [b4, s4, h4] = genetic_algorithm(pop1, r_mut, n_iter)
-    [b5, s5, h5] = genetic_algorithm(pop1, r_mut, n_iter)
-    [b6, s6, h6] = genetic_algorithm(pop1, r_mut, n_iter)
+    #[b1_2, s1_2, h1_2] = genetic_algorithm(np.concatenate((b1, b2)), r_mut, n_iter)
+    #[b2_2, s2_2, h3_2] = genetic_algorithm(np.concatenate((b3, b4)), r_mut, n_iter)
+    #[b3_2, s3_2, h3_2] = genetic_algorithm(np.concatenate((b5, b6)), r_mut, n_iter)
 
-    [b1_2, s1_2, h1_2] = genetic_algorithm(np.concatenate((b1, b2)), r_mut, n_iter)
-    [b2_2, s2_2, h3_2] = genetic_algorithm(np.concatenate((b3, b4)), r_mut, n_iter)
-    [b3_2, s3_2, h3_2] = genetic_algorithm(np.concatenate((b5, b6)), r_mut, n_iter)
+    #[b1_3, s1_3, h1_3] = genetic_algorithm(np.concatenate((b1_2, b2_2)), r_mut, n_iter)
+    #[b2_3, s1_3, h1_3] = genetic_algorithm(np.concatenate((b2_2, b2_3)), r_mut, n_iter)
 
-    [b1_3, s1_3, h1_3] = genetic_algorithm(np.concatenate((b1_2, b2_2)), r_mut, n_iter)
-    [b2_3, s1_3, h1_3] = genetic_algorithm(np.concatenate((b2_2, b2_3)), r_mut, n_iter)
+    #[best, score, h] = genetic_algorithm(np.concatenate((b1_3, b2_3)), r_mut, n_iter)
 
-    [best, score, h] = genetic_algorithm(np.concatenate((b1_3, b2_3)), r_mut, n_iter)
-
-    print(best)
-    print(score)
+    #[best, score, h] = genetic_algorithm(np.concatenate((b1, b2)), r_mut, n_iter)
+    #print(best)
+    #print(score)
 
     end_time = time.time()
     elapsed_time = end_time - start_time

@@ -15,8 +15,8 @@ Improve the Performance Over Time: Reinforcement Learning inherently improves ov
 
  - Double DQN: In a standard DQN, the same network is used to select and evaluate an action, leading to overoptimistic Q-value estimates. The Double DQN uses two networks to separate these roles, reducing overestimations and improving stability.
 
-Adaptive Learning Rate: Another technique for improving performance over time is using an adaptive learning rate for your neural network. This allows the network to learn quickly in the early stages, then more slowly as it starts to converge on an optimal policy.
+Adaptive Learning Rate: Another technique for improving performance over time is using an adaptive learning rate for the neural network. This allows the network to learn quickly in the early stages, then more slowly as it starts to converge on an optimal policy.
 
 Remember, RL can take a significant amount of time to converge to an optimal solution due to the exploration-exploitation trade-off. Exploration allows the agent to discover the best actions by trying out new actions, while exploitation uses the currently known best actions. Balancing this trade-off is key to effective learning.
 
-Lastly, it's essential to note that this is an iterative process. After designing and training your initial model, you should evaluate its performance, adjust your approach as necessary, and retrain. This will likely involve tuning various parameters, such as the learning rate, discount factor, and exploration rate, and potentially experimenting with different RL algorithms or neural network architectures.
+Lastly, it's essential to note that this is an iterative process. After designing and training the initial model, you should evaluate its performance, adjust the approach as necessary, and retrain. This will likely involve tuning various parameters, such as the learning rate, discount factor, and exploration rate, and potentially experimenting with different RL algorithms or neural network architectures.
