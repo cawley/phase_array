@@ -1,5 +1,5 @@
 import keras
-from functions_final import DeepQLearning
+from func import DeepQLearning
 import gym
 import numpy as np
 

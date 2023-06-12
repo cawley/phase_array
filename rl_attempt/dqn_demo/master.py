@@ -1,4 +1,4 @@
-from functions_final import DeepQLearning
+from func import DeepQLearning
 import gym
 
 env=gym.make('CartPole-v1')
