@@ -5,7 +5,7 @@ This Python repository focuses on creating a calibrator application that optimiz
 
 ## Common Approaches
 
- - [Maximum likelihood beamformer](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8902753)
+ - [Maximum likelihood beamformer](https://sci-hub.se/10.23919/EUSIPCO.2019.8902753)
    - This approach models noise as a stationary Gaussian white random process and the signal waveform as deterministic and unknown. 
 - [Bartlett beamformer](https://sci-hub.se/10.4314/njt.v36i4.23)
   - The Bartlett beamformer extends conventional spectral analysis to the Directional Arrival Assessment (DAA). The angle that maximizes the spectral power is used to estimate the angle of arrival. 
