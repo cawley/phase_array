@@ -4,13 +4,24 @@ from matplotlib import pyplot as plt
 import math
 from collections import Counter
 from numpy import nonzero
+from functools import partial
 import time
+
+def split_array(arr):
+    s1, s2, s3 = arr.shape[0] // 4, arr.shape[0] // 2, arr.shape[0] * 3 // 4
+    p1 = arr[:s1]
+    p2 = arr[s1:s2]
+    p3 = arr[s2:s3]
+    p4 = arr[s3:]
+    return p1, p2, p3, p4
 
 start_time = time.time()
 
 optfile = open("optimal_state.txt", "r")
 opt_str = optfile.read()
 opt_arr = np.array([i for i in opt_str if (i == '0' or i == '1')])
+o1, o2, o3, o4 = split_array(opt_arr)
+
 
 inpfile = open("in.txt", "r")
 inp_str = inpfile.read()
@@ -25,13 +36,12 @@ def generate_random_binary_string(n):
 
 fitness_dict = {}
 
-def fitness(state):
+def fitness(state, opt):
     state_string = ''.join(state)
-    # Check if fitness for this state is already computed
     if state_string in fitness_dict:
         return fitness_dict[state_string]
     else:
-        fit_score = np.sum(state != opt_arr)
+        fit_score = np.sum(state != opt)
         fitness_dict[state_string] = fit_score
         return fit_score
 
@@ -52,7 +62,6 @@ def breed(p1, p2):
     return [c1, c2]
 
 def sextuple_breeding(p1, p2, p3, p4, p5, p6):
-    print(p1.size)
     pivot1 = rand.randint(0, int(1 * p1.size/6))
     pivot2 = rand.randint(int(1 * p1.size/6), int(2 * p1.size/6))
     pivot3 = rand.randint(int(2 * p1.size/6), int(3 * p1.size/6))
@@ -85,19 +94,21 @@ def random_reset_mutation(c1, r_mut):
 
 from multiprocessing import Pool
 
-def genetic_algorithm(population, r_mut, n_iter):
+def genetic_algorithm(population, r_mut, n_iter, goal):
     idx = 0
     totalItr = 0
 
-    [best, score] = population[0], fitness(population[0])
-    h = fitness(population[0])
+    [best, score] = population[0], fitness(population[0], goal)
+    h = fitness(population[0], goal)
 
     # Create a multiprocessing Pool
     pool = Pool()
 
+    partial_fitness = partial(fitness, opt=goal)
+
     for gen in range(n_iter):
         # Use pool.map() to compute fitness scores in parallel
-        scores = pool.map(fitness, population)
+        scores = pool.map(partial_fitness, population)
 
         #check for new best
         for i in range(len(population)):
@@ -130,11 +141,11 @@ def genetic_algorithm(population, r_mut, n_iter):
         population = children[:len(children) - elite_cutoff] + elite
 
         for i in range(len(population)):
-            if fitness(population[i]) < h:
-                h = fitness(population[i])
+            if fitness(population[i], goal) < h:
+                h = fitness(population[i], goal)
 
         idx += 1
-        if fitness(best) == 0:
+        if fitness(best, goal) == 0:
             pool.close()
             return [best, score, h]
     
@@ -166,31 +177,18 @@ def parallel_genetic_algorithms(population, r_mut, n_iter):
 
     return b_values, s_values, h_values
 
-def split_2d_list(big_list):
-    # Initialize 4 empty lists
-    pop1, pop2, pop3, pop4 = [], [], [], []
-    
+def split_2d_array(big_array):
     # Calculate the quarter indices
-    s1, s2, s3 = len(big_list[0]) // 4, len(big_list[0]) // 2, len(big_list[0]) * 3 // 4
+    s1, s2, s3 = big_array.shape[1] // 4, big_array.shape[1] // 2, big_array.shape[1] * 3 // 4
 
-    # Iterate through each list in the big_list
-    for lst in big_list:
-        # Append the respective quarters to each smaller list
-        pop1.append(lst[:s1])
-        pop2.append(lst[s1:s2])
-        pop3.append(lst[s2:s3])
-        pop4.append(lst[s3:])
+    # Split the array into 4 smaller arrays
+    pop1 = big_array[:, :s1]
+    pop2 = big_array[:, s1:s2]
+    pop3 = big_array[:, s2:s3]
+    pop4 = big_array[:, s3:]
 
-    # Return the transposed 4 smaller lists
-    return list(map(list, zip(*pop1))), list(map(list, zip(*pop2))), list(map(list, zip(*pop3))), list(map(list, zip(*pop4)))
-
-# Example usage
-big_list = [[1,2,3,4], [1,2,3,4], [1,2,3,4]]
-pop1, pop2, pop3, pop4 = split_2d_list(big_list)
-print(pop1)
-print(pop2)
-print(pop3)
-print(pop4)
+    # Return the 4 smaller arrays
+    return pop1, pop2, pop3, pop4
 
 def main():
     N = 152
@@ -199,51 +197,28 @@ def main():
     r_mut = .2
     n_iter = 1000
 
-    #s1, s2, s3, s4, s5 = int(population.size/6), int(2 * population.size/6), int(3 * population.size/6), int(4 * population.size/6), int(5 * population.size/6)
-    s1, s2, s3 = int(population[0].size/4), int(2 * population[0].size/4), int(3 * population[0].size/4)
-    pop1, pop2, pop3, pop4 = [], [], [], []
-    for i in range(0, s1):
-        print(i)
-        pop1.append(population[i])
-    for i in range(s1, s2):
-        pop2.append(population[i])
-    for i in range(s2, s3):
-        pop3.append(population[i])
-    for i in range(s3, len(population[0])):
-        pop4.append(population[i])
+    o1, o2, o3, o4 = split_array(opt_arr)
+    pop1, pop2, pop3, pop4 = split_2d_array(population)
 
-    print(len(pop1), len(pop2), len(pop3), len(pop4))
-    #pop2 = population[s1:s2]
-    #pop3 = population[s2:s3]
-    #pop4 = population[s3:]
-    #pop5 = population[s4:s5]
-    #pop6 = population[s5:]
-
-    #pops = [pop1, pop2, pop3, pop4]#, pop5, pop6]
-
-    #print(len(pop1))
-    #print(pop2)
-    
-    #[b1, s1, h1] = genetic_algorithm(pop1, r_mut, n_iter)
-    #[b2, s2, h2] = genetic_algorithm(pop2, r_mut, n_iter)
-    #print(b2)
-    #[b3, s3, h3] = genetic_algorithm(pop3, r_mut, n_iter)
-    #[b4, s4, h4] = genetic_algorithm(pop4, r_mut, n_iter)
+    [b1, s1, h1] = genetic_algorithm(pop1, r_mut, n_iter, o1)
+    [b2, s2, h2] = genetic_algorithm(pop2, r_mut, n_iter, o2)
+    [b3, s3, h3] = genetic_algorithm(pop3, r_mut, n_iter, o3)
+    [b4, s4, h4] = genetic_algorithm(pop4, r_mut, n_iter, o4)
     #[b5, s5, h5] = genetic_algorithm(pop1, r_mut, n_iter)
     #[b6, s6, h6] = genetic_algorithm(pop1, r_mut, n_iter)
 
-    #[b1_2, s1_2, h1_2] = genetic_algorithm(np.concatenate((b1, b2)), r_mut, n_iter)
-    #[b2_2, s2_2, h3_2] = genetic_algorithm(np.concatenate((b3, b4)), r_mut, n_iter)
+    [b1_2, s1_2, h1_2] = genetic_algorithm(np.concatenate((b1, b2)), r_mut, n_iter, np.concatenate((o1, o2)))
+    [b2_2, s2_2, h3_2] = genetic_algorithm(np.concatenate((b3, b4)), r_mut, n_iter, np.concatenate((o3, o4)))
     #[b3_2, s3_2, h3_2] = genetic_algorithm(np.concatenate((b5, b6)), r_mut, n_iter)
 
-    #[b1_3, s1_3, h1_3] = genetic_algorithm(np.concatenate((b1_2, b2_2)), r_mut, n_iter)
+    [b1_3, s1_3, h1_3] = genetic_algorithm(np.concatenate((b1_2, b2_2)), r_mut, n_iter, opt_arr)
     #[b2_3, s1_3, h1_3] = genetic_algorithm(np.concatenate((b2_2, b2_3)), r_mut, n_iter)
 
     #[best, score, h] = genetic_algorithm(np.concatenate((b1_3, b2_3)), r_mut, n_iter)
 
-    #[best, score, h] = genetic_algorithm(np.concatenate((b1, b2)), r_mut, n_iter)
-    #print(best)
-    #print(score)
+    [best, score, h] = genetic_algorithm(np.concatenate((b1_3, b2_3)), r_mut, n_iter)
+    print(best)
+    print(score)
 
     end_time = time.time()
     elapsed_time = end_time - start_time
