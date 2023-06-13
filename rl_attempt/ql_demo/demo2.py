@@ -6,7 +6,7 @@ env.reset()
 
 obs, info = env.reset(seed=42)
 
-for i in range(1500):
+while not done:
     # action = 1
     # action = 2
     # intelligent action is
