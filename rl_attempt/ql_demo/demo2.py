@@ -1,7 +1,7 @@
 import time
 import gymnasium as gym
 
-env = gym.make("LunarLander-v2", render_mode = "human")
+env = gym.make("CartPole-v1", render_mode = "human")
 env.reset()
 
 obs, info = env.reset(seed=42)

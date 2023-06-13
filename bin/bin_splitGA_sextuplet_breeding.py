@@ -46,13 +46,22 @@ def fitness(state, opt):
         return fit_score
 
 def roulette_selection(population, scores):
-    aggregate = np.sum(scores)
-    p_state = np.cumsum(scores) / aggregate
-    r = rand.uniform(0, 1)
+    aggregate = 0.0
     for i in range(len(population)):
-        if r <= p_state[i]:
-            return population[i]
-    return population[-1]
+        aggregate += scores[i]
+    prev = 0.0
+    p_state = []
+    for i in range (len(population)):
+        if aggregate != 0:
+            p_state.append(prev + (scores[i] / aggregate)) 
+        else:
+            p_state.append(prev)
+        prev = p_state[i]
+    r = rand.uniform(0, 1)
+    for i in range (len(population)):
+        if r < p_state[i]:
+            temp = population[i]
+            return temp
 
 def breed(p1, p2):
     pivot = rand.randint(1, int(p1.size/2))
@@ -123,7 +132,7 @@ def genetic_algorithm(population, r_mut, n_iter, goal):
         parents = [roulette_selection(population, scores) for _ in range(len(population))]
 
         children = list()
-        for i in range(0, len(parents) - 6, 6):
+        for i in range(0, len(parents), 6):
             p1, p2, p3, p4, p5, p6 = parents[i], parents[i+1], parents[i+2], parents[i+3], parents[i+4], parents[i+5]
             c1, c2, c3, c4, c5, c6 = sextuple_breeding(p1, p2, p3, p4, p5, p6)
             c1 = swapmutation(c1, r_mut)

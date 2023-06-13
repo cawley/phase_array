@@ -12,6 +12,9 @@ optfile = open("optimal_state.txt", "r")
 opt_str = optfile.read()
 opt_arr = np.array([i for i in opt_str if (i == '0' or i == '1')])
 
+opt_arr_copy = opt_arr[:300]
+opt_arr = opt_arr_copy
+
 inpfile = open("in.txt", "r")
 inp_str = inpfile.read()
 
@@ -87,6 +90,8 @@ def genetic_algorithm(population, r_mut, n_iter):
     [best, score] = population[0], fitness(population[0])
     h = fitness(population[0])
 
+    mut = h/25
+
     # Create a multiprocessing Pool
     pool = Pool()
 
@@ -132,10 +137,10 @@ def genetic_algorithm(population, r_mut, n_iter):
 
 def main():
     N = 150
-    length = 1536
+    length = 300
     population = [generate_random_binary_string(length) for _ in range(N)] 
-    r_mut = .2
-    n_iter = 1000
+    r_mut = .5
+    n_iter = 10000
     print(fitness(population[0]))
     [best, score, h] = genetic_algorithm(population, r_mut, n_iter)
     print(best)
