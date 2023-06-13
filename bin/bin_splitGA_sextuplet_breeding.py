@@ -20,7 +20,8 @@ start_time = time.time()
 
 optfile = open("optimal_state.txt", "r")
 opt_str = optfile.read()
-opt_arr = np.array([i for i in opt_str if (i == '0' or i == '1')])
+opt_str = ''.join(opt_str.split())
+opt_arr = np.array([i for i in opt_str]).astype(int)
 o1, o2, o3, o4 = split_array(opt_arr)
 
 inpfile = open("in.txt", "r")
@@ -37,22 +38,13 @@ def generate_random_binary_string(n):
 fitness_dict = {}
 
 def fitness(state, opt):
-    state_string = ''.join(state)
-    if state_string in fitness_dict:
-        return fitness_dict[state_string]
-    else:
-        fit_score = np.sum(state != opt)
-        fitness_dict[state_string] = fit_score
-        return fit_score
+    return np.sum(abs(state - opt))
 
 def roulette_selection(population, scores):
-    aggregate = np.sum(scores)
-    p_state = np.cumsum(scores) / aggregate
-    r = rand.uniform(0, 1)
-    for i in range(len(population)):
-        if r <= p_state[i]:
-            return population[i]
-    return population[-1]
+    populationSize = np.shape(population)[0]
+    p_state = scores / np.sum(scores)
+    ind = np.random.choice(np.linspace(0, populationSize - 1, populationSize).astype(int), p=p_state, size=(1,), replace=False)
+    return population[ind, :]
 
 def breed(p1, p2):
     pivot = rand.randint(1, int(p1.size/2))
@@ -62,6 +54,13 @@ def breed(p1, p2):
     return [c1, c2]
 
 def sextuple_breeding(p1, p2, p3, p4, p5, p6):
+    p1 = np.squeeze(p1)
+    p2 = np.squeeze(p2)
+    p3 = np.squeeze(p3)
+    p4 = np.squeeze(p4)
+    p5 = np.squeeze(p5)
+    p6 = np.squeeze(p6)
+
     pivot1 = rand.randint(0, int(1 * p1.size/6))
     pivot2 = rand.randint(int(1 * p1.size/6)+1, int(2 * p1.size/6))
     pivot3 = rand.randint(int(2 * p1.size/6)+1, int(3 * p1.size/6))
@@ -81,15 +80,17 @@ def swapmutation(c1, r_mut):
     r = rand.uniform(0, 1)
     for _ in range(c1.size):
         if r < r_mut:
-            rpos1, rpos2 = rand.randint(0, c1.size - 1), rand.randint(0, c1.size - 1)
-            c1[rpos1], c1[rpos2] = c1[rpos2], c1[rpos1]
+            inds = np.random.choice(np.linspace(0, c1.size - 1, c1.size).astype(int), size=(2,), replace=False)
+            temp = c1[inds[0]]
+            c1[inds[0]] = c1[inds[1]]
+            c1[inds[1]] = temp
     return c1
 
 def random_reset_mutation(c1, r_mut):
     for i in range (c1.size):
         r = rand.uniform(0, 1)
         if r < r_mut:
-            c1[i] = '1' if c1[i] == '0' else '0'
+            c1[i] = not c1[i]
     return c1
 
 from multiprocessing import Pool
@@ -117,28 +118,30 @@ def genetic_algorithm(population, r_mut, n_iter, goal):
                 print(">%d, new best f(%s) = %f" % (gen, population[i], scores[i]))
 
         sorted_population = [x for _, x in sorted(zip(scores, population), key=lambda pair: pair[0])]
-        elite_cutoff = int(len(sorted_population) * 0.0625) # This amounts to ~96 elite individuals (1/16)
+        elite_cutoff = int(np.ceil(len(sorted_population) * 1/12)) # This amounts to ~96 elite individuals (1/16)
         elite = sorted_population[:elite_cutoff]
         
         parents = [roulette_selection(population, scores) for _ in range(len(population))]
 
         children = list()
-        for i in range(0, len(parents) - 6, 6):
+        r_mut = score / np.shape(population)[0]
+        for i in range(0, len(parents), 6):
             p1, p2, p3, p4, p5, p6 = parents[i], parents[i+1], parents[i+2], parents[i+3], parents[i+4], parents[i+5]
             c1, c2, c3, c4, c5, c6 = sextuple_breeding(p1, p2, p3, p4, p5, p6)
-            c1 = swapmutation(c1, r_mut)
+            c1 = random_reset_mutation(c1, r_mut)
             c2 = random_reset_mutation(c2, r_mut)
-            c3 = swapmutation(c3, r_mut)
+            c3 = random_reset_mutation(c3, r_mut)
             c4 = random_reset_mutation(c4, r_mut)
-            c5 = swapmutation(c5, r_mut)
+            c5 = random_reset_mutation(c5, r_mut)
             c6 = random_reset_mutation(c6, r_mut)
+
             children.append(c1)
             children.append(c2)
             children.append(c3)
             children.append(c4)
             children.append(c5)
             children.append(c6)
-        population = children[:len(children) - elite_cutoff] + elite
+        population = np.concatenate((children[:-elite_cutoff], elite))
 
         for i in range(len(population)):
             if fitness(population[i], goal) < h:
@@ -191,14 +194,15 @@ def split_2d_array(big_array):
     return pop1, pop2, pop3, pop4
 
 def main():
-    N = 152
-    length = 1536
-    population = np.array([generate_random_binary_string(length) for _ in range(N)])
-    r_mut = .2
-    n_iter = 1000
+    N = 12
+    length = 12
+    population = np.random.randint(2, size=(N, length))
+    r_mut = .5
+    n_iter = 10000
 
     o1, o2, o3, o4 = split_array(opt_arr)
-    pop1, pop2, pop3, pop4 = split_2d_array(population)
+    o1 = opt_arr[:length]
+    pop1 = population
 
     [b1, s1, h1] = genetic_algorithm(pop1, r_mut, n_iter, o1)
     [b2, s2, h2] = genetic_algorithm(pop2, r_mut, n_iter, o2)
