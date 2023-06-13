@@ -24,7 +24,7 @@ The project is implemented in Python and requires the following packages:
 ## Getting Started
 Here are the steps to clone and run the project:
 ```
-git clone https://github.com/cawleyl/phase_array/bin/beamformer_calibration.git
+git clone https://github.com/cawleyl/phase_array/bin.git
 cd beamformer_calibration
 python3 genetic_algorithm.py
 ```
