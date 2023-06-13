@@ -115,7 +115,7 @@ def genetic_algorithm(population, r_mut, n_iter):
     return [best, score, h]
 
 def main():
-    N = 80
+    N = 4
     length = 1536
     population = [generate_random_binary_string(length) for _ in range(N)] 
     r_mut = .4

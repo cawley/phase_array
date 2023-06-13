@@ -23,6 +23,9 @@ def h(state):
             num_conflicts += conflict(state[c1], c1, state[c2], c2)
     return num_conflicts
 
+def h2(state):
+    return np.sum(abs(state - np.ones(np.shape(state))))
+
 # 5.3
 '''
 input:

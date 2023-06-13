@@ -12,8 +12,8 @@ optfile = open("optimal_state.txt", "r")
 opt_str = optfile.read()
 opt_arr = np.array([i for i in opt_str if (i == '0' or i == '1')])
 
-opt_arr_copy = opt_arr[:300]
-opt_arr = opt_arr_copy
+#opt_arr_copy = opt_arr[:150]
+#opt_arr = opt_arr_copy
 
 inpfile = open("in.txt", "r")
 inp_str = inpfile.read()
@@ -35,13 +35,22 @@ def fitness(state):
         return fit_score
 
 def roulette_selection(population, scores):
-    aggregate = np.sum(scores)
-    p_state = np.cumsum(scores) / aggregate
-    r = rand.uniform(0, 1)
+    aggregate = 0.0
     for i in range(len(population)):
-        if r <= p_state[i]:
-            return population[i]
-    return population[-1]
+        aggregate += scores[i]
+    prev = 0.0
+    p_state = []
+    for i in range (len(population)):
+        if aggregate != 0:
+            p_state.append(prev + (scores[i] / aggregate)) 
+        else:
+            p_state.append(prev)
+        prev = p_state[i]
+    r = rand.uniform(0, 1)
+    for i in range (len(population)):
+        if r < p_state[i]:
+            temp = population[i]
+            return temp
 
 def breed(p1, p2):
     pivot = rand.randint(1, int(p1.size/2))
@@ -90,7 +99,7 @@ def genetic_algorithm(population, r_mut, n_iter):
     [best, score] = population[0], fitness(population[0])
     h = fitness(population[0])
 
-    mut = h/25
+    mut = h/300
 
     # Create a multiprocessing Pool
     pool = Pool()
@@ -136,8 +145,8 @@ def genetic_algorithm(population, r_mut, n_iter):
 
 
 def main():
-    N = 150
-    length = 300
+    N = 4
+    length = 1536
     population = [generate_random_binary_string(length) for _ in range(N)] 
     r_mut = .5
     n_iter = 10000
