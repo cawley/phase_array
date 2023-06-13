@@ -9,25 +9,18 @@ import pyswarms as ps
 from pyswarms.utils.functions import single_obj as fx
 from pyswarms.utils.plotters import (plot_cost_history, plot_contour, plot_surface)
 
-# Some more magic so that the notebook will reload external python modules;
-# see http://stackoverflow.com/questions/1907993/autoreload-of-modules-in-ipython
-# %load_ext autoreload
-# %autoreload 2
-
+# You should know how this part works.
 options = {'c1':0.5, 'c2':0.3, 'w':0.9}
 optimizer = ps.single.GlobalBestPSO(n_particles=50, dimensions=2, options=options)
 cost, pos = optimizer.optimize(fx.sphere, iters=100)
 
+# This part too.
 plot_cost_history(cost_history=optimizer.cost_history)
 plt.show()
 
-# equivalent to rcParams['animation.html'] = 'html5'
-# See http://louistiao.me/posts/notebooks/save-matplotlib-animations-as-gifs/
+# The following is left as an exercise to the reader.
 rc('animation', html='html5')
-
 from pyswarms.utils.plotters.formatters import Mesher
-
-# Initialize mesher with sphere function
 m = Mesher(func=fx.sphere)
 
 # Make animation
