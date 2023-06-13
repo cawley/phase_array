@@ -24,7 +24,7 @@ The project is implemented in Python and requires the following packages:
 ## Getting Started
 Here are the steps to clone and run the project:
 \```
-git clone https://github.com/your_username/beamformer_calibration.git
+git clone https://github.com/cawleyl/phase_array/bin/beamformer_calibration.git
 cd beamformer_calibration
 python3 genetic_algorithm.py
 \```
@@ -37,4 +37,4 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 [MIT](https://choosealicense.com/licenses/mit/)
 
 ## Contact
-If you have any questions, feel free to reach out at your_email@example.com.
+If you have any questions, feel free to reach out at cawleyl@umich.edu.
