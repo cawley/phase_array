@@ -16,7 +16,7 @@ DISCRETE_OS_SIZE = [20, 20]
 discrete_os_win_size = (env.observation_space.high - env.observation_space.low)/DISCRETE_OS_SIZE
 
 # Exploration settings
-epsilon = 1  # not a constant, qoing to be decayed
+epsilon = 1  # not a constant, going to be decayed
 START_EPSILON_DECAYING = 1
 END_EPSILON_DECAYING = EPISODES//2
 epsilon_decay_value = epsilon/(END_EPSILON_DECAYING - START_EPSILON_DECAYING)

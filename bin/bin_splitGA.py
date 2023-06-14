@@ -11,9 +11,10 @@ start_time = time.time()
 optfile = open("optimal_state.txt", "r")
 opt_str = optfile.read()
 opt_arr = np.array([i for i in opt_str if (i == '0' or i == '1')])
+opt_int = [int(i) for i in opt_arr]
 
-#opt_arr_copy = opt_arr[:150]
-#opt_arr = opt_arr_copy
+opt_arr_copy = opt_arr[:100]
+opt_arr = opt_arr_copy
 
 inpfile = open("in.txt", "r")
 inp_str = inpfile.read()
@@ -21,17 +22,20 @@ inp_str = inpfile.read()
 def generate_random_binary_string(n):
     return np.array([rand.choice('01') for _ in range(n)])
 
+def generate_random_bin_array(n):
+    return np.zeros(n)
+
 # Fitness dictionary to store previously computed fitness scores
 fitness_dict = {}
 
 def fitness(state):
-    state_string = ''.join(state)
+    tup = tuple(state)
     # Check if fitness for this state is already computed
-    if state_string in fitness_dict:
-        return fitness_dict[state_string]
+    if tup in fitness_dict:
+        return fitness_dict[tup]
     else:
         fit_score = np.sum(state != opt_arr)
-        fitness_dict[state_string] = fit_score
+        fitness_dict[tup] = fit_score
         return fit_score
 
 def roulette_selection(population, scores):
@@ -59,22 +63,6 @@ def breed(p1, p2):
     c2 = np.concatenate((p2[:pivot2], p1[pivot2:]))
     return [c1, c2]
 
-def sextuple_breeding(p1, p2, p3, p4, p5, p6):
-    pivot1 = rand.randint(1, int(1 * p1.size/5))
-    pivot2 = rand.randint(int(1 * p1.size/5), int(2 * p1.size/5))
-    pivot3 = rand.randint(int(2 * p1.size/5), int(3 * p1.size/5))
-    pivot4 = rand.randint(int(3 * p1.size/5), int(4 * p1.size/5))
-    pivot5 = rand.randint(int(4 * p1.size/5), p1.size - 1)
-
-    c1 = np.concatenate((p1[:pivot1], p2[pivot1:pivot2], p3[pivot2:pivot3], p4[pivot3:pivot4], p5[pivot4:pivot5], p6[pivot5:pivot6]))
-    c2 = np.concatenate((p2[:pivot1], p3[pivot1:pivot2], p4[pivot2:pivot3], p5[pivot3:pivot4], p6[pivot4:pivot5], p1[pivot5:pivot6]))
-    c3 = np.concatenate((p3[:pivot1], p4[pivot1:pivot2], p5[pivot2:pivot3], p6[pivot3:pivot4], p1[pivot4:pivot5], p2[pivot5:pivot6]))
-    c4 = np.concatenate((p4[:pivot1], p5[pivot1:pivot2], p6[pivot2:pivot3], p1[pivot3:pivot4], p2[pivot4:pivot5], p3[pivot5:pivot6]))
-    c5 = np.concatenate((p5[:pivot1], p6[pivot1:pivot2], p1[pivot2:pivot3], p2[pivot3:pivot4], p3[pivot4:pivot5], p4[pivot5:pivot6]))
-    c6 = np.concatenate((p6[:pivot1], p1[pivot1:pivot2], p2[pivot2:pivot3], p3[pivot3:pivot4], p4[pivot4:pivot5], p5[pivot5:pivot6]))
-
-    return [c1, c2, c3, c4, c5, c6]
-
 def swapmutation(c1, r_mut):
     r = rand.uniform(0, 1)
     for _ in range(c1.size):
@@ -87,7 +75,7 @@ def random_reset_mutation(c1, r_mut):
     for i in range (c1.size):
         r = rand.uniform(0, 1)
         if r < r_mut:
-            c1[i] = '1' if c1[i] == '0' else '0'
+            c1[i] = 1 if c1[i] == 0 else 0
     return c1
 
 from multiprocessing import Pool
@@ -146,8 +134,8 @@ def genetic_algorithm(population, r_mut, n_iter):
 
 def main():
     N = 4
-    length = 1536
-    population = [generate_random_binary_string(length) for _ in range(N)] 
+    length = 100
+    population = [generate_random_bin_array(length) for _ in range(N)] 
     r_mut = .5
     n_iter = 10000
     print(fitness(population[0]))

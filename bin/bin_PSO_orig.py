@@ -1,15 +1,46 @@
-import random as rand
 import numpy as np
+import random as rand
+from matplotlib import pyplot as plt
+import math
+from collections import Counter
+from numpy import nonzero
+import time
 
-def conflict(row1, col1, row2, col2):
-    return (row1 == row2 or col1 == col2 or row1 - col1 == row2 - col2 or row1 + col1 == row2 + col2)
+start_time = time.time()
 
-def conflicts(state):
-    N = len(state)
-    return sum(conflict(state[c1], c1, state[c2], c2) for c1 in range(N) for c2 in range(c1 + 1, N))
+global n_sub
+n_sub = 12
+
+optfile = open("optimal_state.txt", "r")
+opt_str = optfile.read()
+opt_arr = np.array([i for i in opt_str if (i == '0' or i == '1')])
+
+opt_arr_copy = opt_arr[:n_sub]
+opt_arr = opt_arr_copy
+opt_int = [int(i) for i in opt_arr_copy]
+opt_int = np.zeros(n_sub)
+
+inpfile = open("in.txt", "r")
+inp_str = inpfile.read()
+
+def generate_random_binary_string(n):
+    return np.array([rand.choice('01') for _ in range(n)])
+
+def generate_random_bin_array(n):
+    return np.zeros(n)
+
+# Fitness dictionary to store previously computed fitness scores
+fitness_dict = {}
 
 def fitness(state):
-    return (conflicts([0]*len(state)) - conflicts(state))
+    a = tuple(state)
+    # Check if fitness for this state is already computed
+    if a in fitness_dict:
+        return fitness_dict[a]
+    else:
+        fit_score = np.sum(state)
+        fitness_dict[a] = fit_score
+        return fit_score
 
 global gbest
 global gbest_score
@@ -24,12 +55,12 @@ def pso(n_sub, n_parts, n_iter):
     inertia = 2
     r_maxv = 3
 
-    particles = [{'states': [rand.randint(0, n_parts-1) for _ in range(n_sub)],
+    particles = [{'states': [rand.randint(0, 1) for _ in range(n_sub)],
                   'pbest': [-1]*n_sub,
-                  'pbest_score': 0,
+                  'pbest_score': n_sub,
                   'v': [rand.randint(0, r_maxv) for _ in range(n_sub)]} for _ in range(n_sub)]
                   
-    h = conflicts(particles[0]['states'])
+    h = fitness(particles[0]['states'])
     for i in range(n_iter):
         for particle in particles:
             score = fitness(particle['states'])
@@ -49,8 +80,8 @@ def pso(n_sub, n_parts, n_iter):
                     particle['states'][state_idx] = (particle['states'][state_idx] + particle['v'][state_idx]) % n_sub
         
         for j in range(len(particles)):
-            if conflicts(particles[j]['states']) < h:
-                h = conflicts(particles[j]['states'])
+            if fitness(particles[j]['states']) < h:
+                h = fitness(particles[j]['states'])
             #print(particles[j])
 
         #print(f"Global Best: {gbest} Score: {gbest_score}\n")
@@ -59,6 +90,8 @@ def pso(n_sub, n_parts, n_iter):
     return gbest, h, convInfo
 
 def repeatPSO(maxItr, numLoops, initState, numRuns):
+    # N SUB IS THE LENGTH OF THE STRING
+    # N PARTS IS THE POPULATION SIZE
     n_iter = maxItr
     n_sub = 8
     n_parts = 8
@@ -74,21 +107,29 @@ def repeatPSO(maxItr, numLoops, initState, numRuns):
     return convInfoFinal
 
 def main():
+    '''
     n_sub = int(input("N (Queens)")) 
     n_parts = int(input("Swarm Quantity"))
     n_iter = int(input("Iteration Count"))
     n_samp = int(input("Amount of Trials"))
 
-    g, h = pso(n_sub, n_parts, n_iter)
+    '''
+    n_parts = 4
+    n_iter = 100
+    n_samp = 10
+    r_maxv = 3
 
-    print("Max Score Possible for N queens", conflicts([0]*len(g)))
-    print("Best State:", g, "Best State Score:", fitness(g))
+    g, s, c = pso(n_sub, n_parts, n_iter)
 
+    print(g, s)
+
+    '''
     totalh = 0
     for i in range(n_samp):
-        g, h = pso(n_sub, n_parts, n_iter)
+        g, h, conv = pso(n_sub, n_parts, n_iter)
         totalh += h
     print(f"H Score: {totalh/n_samp}")
+    '''
 
 if __name__ == "__main__":
     main()
