@@ -9,7 +9,7 @@ import time
 start_time = time.time()
 
 global n_sub
-n_sub = 12
+n_sub = 1536
 
 optfile = open("optimal_state.txt", "r")
 opt_str = optfile.read()
@@ -32,6 +32,15 @@ def generate_random_bin_array(n):
 # Fitness dictionary to store previously computed fitness scores
 fitness_dict = {}
 
+def encoding(state):
+    arr = np.resize(arr, (len(arr) // 6, 6))
+    
+    # Convert binary to decimal using NumPy's binary_repr function
+    decimals = np.array([int(''.join(row), 2) for row in arr])
+    
+    return decimals
+
+
 def fitness(state):
     a = tuple(state)
     # Check if fitness for this state is already computed
@@ -47,44 +56,44 @@ global gbest_score
 
 def pso(n_sub, n_parts, n_iter):
     convInfo = np.zeros((n_iter, 2))
-    gbest = [-1]*n_sub 
-    gbest_score = -np.inf
+    gbest = [63]*n_sub 
+    gbest_score = np.inf
 
     cognitive = 1
     social = 1
-    inertia = 2
-    r_maxv = 3
+    inertia = 1
+    r_maxv = 4
 
-    particles = [{'states': [rand.randint(0, 1) for _ in range(n_sub)],
-                  'pbest': [-1]*n_sub,
+    particles = [{'states': [rand.randint(0, 63) for _ in range(n_sub // 6)],
+                  'pbest': [1]*n_sub,
                   'pbest_score': n_sub,
-                  'v': [rand.randint(0, r_maxv) for _ in range(n_sub)]} for _ in range(n_sub)]
+                  'v': [rand.randint(0, r_maxv) for _ in range(n_sub // 6)]} for _ in range(n_parts)]
                   
     h = fitness(particles[0]['states'])
+
     for i in range(n_iter):
         for particle in particles:
             score = fitness(particle['states'])
             particle['score'] = score
-            if score > particle['pbest_score']:
+            if score < particle['pbest_score']:
                 particle['pbest'] = particle['states'].copy()
                 particle['pbest_score'] = score
 
-            if score > gbest_score:
+            if score < gbest_score:
                 gbest = particle['states'].copy()
                 gbest_score = score
+                print(f"> {i}: New Global Best: {gbest} Score: {gbest_score}\n")
 
             for particle_idx, particle in enumerate(particles):
                 for state_idx, state_val in enumerate(particle['states']):
                     r = rand.randint(0, 2)
                     particle['states'][state_idx] = inertia * particle['v'][state_idx] + cognitive * r * (particle['pbest'][state_idx] - state_val) + social * r * (gbest[state_idx] - state_val)
-                    particle['states'][state_idx] = (particle['states'][state_idx] + particle['v'][state_idx]) % n_sub
+                    particle['states'][state_idx] = (particle['states'][state_idx] + particle['v'][state_idx]) % (64)
         
         for j in range(len(particles)):
             if fitness(particles[j]['states']) < h:
                 h = fitness(particles[j]['states'])
-            #print(particles[j])
 
-        #print(f"Global Best: {gbest} Score: {gbest_score}\n")
         convInfo[i, :] = [i, h]
 
     return gbest, h, convInfo
@@ -114,10 +123,9 @@ def main():
     n_samp = int(input("Amount of Trials"))
 
     '''
-    n_parts = 4
-    n_iter = 100
+    n_parts = 12
+    n_iter = 10000
     n_samp = 10
-    r_maxv = 3
 
     g, s, c = pso(n_sub, n_parts, n_iter)
 
