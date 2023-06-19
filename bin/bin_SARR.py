@@ -1,49 +1,29 @@
+import utils
 import numpy as np
-import random as rand
-from matplotlib import pyplot as plt
-import distance as ds
 
-optfile = open("optimal_state.txt", "r")
-opt_str = optfile.read()
-opt_lst = list(opt_str)
-opt_arr = [i for i in opt_lst if (i == '0' or i == '1')]
+'''
+The main steepest ascent algorithm. This function is called after every restart.
 
-inpfile = open("in.txt", "r")
-inp_str = inpfile.read()
+input: 
+  state: initial state
+  convInfo: (2 x n) convergence info
+  idx:  current index for convInfo
+  totalItr: current number of obj fn calls
+  minh: current minimum conflicts
 
-def generate_random_binary_string(n):
-    return ''.join(rand.choice('01') for _ in range(n))
-
-state_str = generate_random_binary_string(len(opt_arr))
-state = list(state_str)
-
-def generate_bin():
-    f = open("in.txt", "w")
-    c = 1
-    for _ in range(256):
-        s = ""
-        for _ in range(6):
-            r = rand.uniform(0, 1)
-            if r > .5:
-                s += "1"
-            else:
-                s += "0"        
-        f.write(s)
-        f.write(" ")
-        c +=1
-
-def objective(state):
-    return sum(s != o for s, o in zip(state, opt_arr))
-
+returns:
+  current: the final state
+  h: the heuristic cost of the final state
+  count: the number of steps taken
+'''
 def steepestAscent(state, convInfo, idx, totalItr, minh):
-    state = list(state)
 
-    current = state
+    current = state.copy()
     count = 0
 
     while True:
         neighbor = current.copy()
-        neighborH = objective(current)
+        neighborH = -utils.h2(current)
         N = len(current)
 
         #find best neighbor
@@ -51,44 +31,60 @@ def steepestAscent(state, convInfo, idx, totalItr, minh):
             temp = current.copy()
 
             # move down
-            while (temp[i] == '0'):
+            while (temp[i] != 0):
                 totalItr += 1
-                temp[i] = '1'
-                if objective(temp) < neighborH:
+                temp[i] -= 1
+                if -utils.h2(temp) > neighborH:
                     neighbor = temp.copy()
-                    neighborH = objective(temp)
+                    neighborH = -utils.h2(temp)
 
             # move up
-            while (temp[i] == '1'):
+            while (temp[i] != 2 - 1):
                 totalItr += 1
-                temp[i] = '0'
-                if objective(temp) < neighborH:
+                temp[i] += 1
+                if -utils.h2(temp) > neighborH:
                     neighbor = temp.copy()
-                    neighborH = objective(temp)
+                    neighborH = -utils.h2(temp)
 
-        if neighborH >= objective(current):
-            print(current, state, objective(state))
-            return current, objective(state), objective(current), count, convInfo, idx, totalItr, minh
+        if neighborH <= -utils.h2(current):
+            return current, utils.h2(state), utils.h2(current), count, convInfo, idx, totalItr, minh
         
+
         current = neighbor.copy()
         count += 1
 
-        if objective(current) < minh:
-            minh = objective(current)
-            print(minh)
+        if utils.h2(current) < minh:
+            minh = utils.h2(current)
+            print('Run: {}, h: {}'.format(totalItr, minh))
 
         convInfo[idx, :] = [totalItr, minh]
         idx += 1
 
-def steepestAscentRandomRestart(maxItr, state, numRuns=100, numRestarts=100):
+
+'''
+Function implementing random restarts
+
+input:
+  maxItr: max number of obj fn calls
+  state: initial state
+  runRuns: number of runs
+  rumRestarts: number of restarts
+
+returns:
+  estimateRestarts: Empirical estimate of the expected number of restarts
+  estimateSteps: Empirical estimate of the expected total number of steps across restarts
+  convInfo: (n x 2) matrix of minimum conflicts and number of objective function calls
+
+'''
+def steepestAscentRandomRestart(maxItr, state, numRuns=1000, numRestarts=100):
 
     convInfo = np.zeros((10000, 2))
     idx = 0
 
     N = len(state)
 
-    maxConflicts = objective(np.zeros((N,)))
-    minh = objective(state)
+    maxConflicts = utils.h2(np.zeros((N,)))
+    minh = utils.h2(state)
 
     restarts = 0
     steps = 0
@@ -100,8 +96,7 @@ def steepestAscentRandomRestart(maxItr, state, numRuns=100, numRestarts=100):
 
     for i in range(numRuns):
         # randomize the state
-        state_str = generate_random_binary_string(len(opt_arr))
-        state = list(state_str)
+        state = np.random.randint(low=0, high=2, size=(N,))
         for j in range(numRestarts):
             arr, hInitial, currH, count, convInfo, idx, totalItr, minh = steepestAscent(state, convInfo, idx, totalItr, minh)
             steps += count
@@ -111,8 +106,7 @@ def steepestAscentRandomRestart(maxItr, state, numRuns=100, numRestarts=100):
                 break
             else:
                 # randomize the state
-                state_str = generate_random_binary_string(len(opt_arr))
-                state = list(state_str)
+                state = np.random.randint(low=0, high=2, size=(N,))
 
             restarts += 1
         
@@ -124,6 +118,20 @@ def steepestAscentRandomRestart(maxItr, state, numRuns=100, numRestarts=100):
 
     return estimateRestarts, estimateSteps, convInfo, idx
 
+
+'''
+Average results from numLoops runs of the algorithm
+
+input:
+  numLoops: number of loops to average over
+  state: initial state
+  runRuns: number of runs per loop
+  rumRestarts: number of restarts
+
+returns:
+  convInfo: (n x 2) matrix of minimum conflicts and number of objective function calls, averaged over numLoops calls
+
+'''
 def repeatSARR(maxItr, numLoops, state, numRuns, numRestarts):
     estimateRestarts, estimateSteps, convInfoFinal, len = steepestAscentRandomRestart(maxItr, state, numRuns=numRuns)
     
@@ -145,31 +153,3 @@ def repeatSARR(maxItr, numLoops, state, numRuns, numRestarts):
     convInfoFinal /= numLoops
 
     return convInfoFinal
-
-def main():
-    n_iter = 100
-    n_samp = 100
-
-    print(objective(state))
-
-    ci_sarr = repeatSARR(n_iter, n_samp, state, 100, 100)
-    print(ci_sarr)
-    #line1, = plt.plot(ci_sarr[:, 0], ci_sarr[:, 1], label='Steepest Ascent with Random Restart')
-    #plt.legend(handles=[line1])
-    #plt.title('N = {} Queens, {} Max Calls, {} Iterations'.format(N, maxItr, numLoops))
-    #plt.xlabel("Number of Iterations")
-    #plt.ylabel("Average Remaining Conflicts")
-    #plt.grid()
-    #plt.show()
-
-
-
-
-if __name__ == "__main__":
-    main()
-# May Be Useful Later
-#from difflib import SequenceMatcher
-#from Bio.Align import PairwiseAligner
-#return SequenceMatcher(None, state, opt_str).ratio()
-#return PairwiseAligner.score(state, opt_arr)
-#opt_arr_str = ['{:06b}'.format(num) for num in opt_arr]
