@@ -28,21 +28,22 @@ def geneticAlgorithm(population, N=8, populationSize=4, mutationRate=0.15, numRu
 
         # find selection probabilities
         for i in range(populationSize):
-            weights[i] = N - utils.h2(population[i])
+            weights[i] = maxConflicts - utils.h2(population[i])
         
             totalItr += 1
-        print('Run: {}, h: {}'.format(totalItr, np.min(weights)))
+        print('Run: {}, h: {}'.format(totalItr, minh))
 
-        minh = np.min(weights)
-        min_ind = np.argmin(weights)
+        minh = maxConflicts - np.max(weights)
+        min_ind = np.argmax(weights)
         super_child = population[min_ind]
 
         if np.min(weights) == 0:
+            print(super_child)
             return
-        weights = np.power(weights, 2)
+        weights = np.power(weights, 3)
         weights = weights / np.linalg.norm(weights, ord=1)
 
-        children = []
+        children = [None] * populationSize
 
         for i in range(populationSize - 1):
             # create a child
@@ -55,17 +56,17 @@ def geneticAlgorithm(population, N=8, populationSize=4, mutationRate=0.15, numRu
             # mutate this child
             for j in range(N):
                 if (np.random.uniform(low=0, high=1) < mutationRate):
-                    child[j] = np.random.randint(low=0, high=1)
+                    child[j] = np.random.randint(low=0, high=2)
 
-            children.append(child)
-        children.append(super_child)
+            children[i] = child
+        children[-1] = super_child
 
         population = children.copy()
 
         # find min h for all runs
-        for i in range(populationSize):
-            if utils.h2(population[i]) < minh:
-                minh = utils.h2(population[i])
+        #for i in range(populationSize):
+        #    if utils.h2(population[i]) < minh:
+        #        minh = utils.h2(population[i])
 
         convInfo[idx, :] = [totalItr, minh]
         idx += 1

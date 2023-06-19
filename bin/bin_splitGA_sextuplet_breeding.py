@@ -99,7 +99,7 @@ def genetic_algorithm(population, r_mut, n_iter, goal):
     idx = 0
     totalItr = 0
 
-    [best, score] = population[0], fitness(population[0], goal)
+    [best, best_score] = population[0], fitness(population[0], goal)
     h = fitness(population[0], goal)
 
     # Create a multiprocessing Pool
@@ -112,10 +112,11 @@ def genetic_algorithm(population, r_mut, n_iter, goal):
         scores = pool.map(partial_fitness, population)
 
         #check for new best
-        for i in range(len(population)):
-            if scores[i] < score:
-                best, score = population[i], scores[i]
-                print(">%d, new best f(%s) = %f" % (gen, population[i], scores[i]))
+        min_score = np.min(scores)
+        min_ind = np.argmin(scores)
+        if min_score < best_score:
+            best, best_score = population[min_ind], scores[min_ind]
+            print(">%d, new best f(%s) = %f" % (gen, best, best_score))
 
         sorted_population = [x for _, x in sorted(zip(scores, population), key=lambda pair: pair[0])]
         elite_cutoff = int(np.ceil(len(sorted_population) * 1/12)) # This amounts to ~96 elite individuals (1/16)
@@ -124,7 +125,7 @@ def genetic_algorithm(population, r_mut, n_iter, goal):
         parents = [roulette_selection(population, scores) for _ in range(len(population))]
 
         children = list()
-        r_mut = score / np.shape(population)[0]
+        r_mut = best_score / np.shape(population)[1]
         for i in range(0, len(parents), 6):
             p1, p2, p3, p4, p5, p6 = parents[i], parents[i+1], parents[i+2], parents[i+3], parents[i+4], parents[i+5]
             c1, c2, c3, c4, c5, c6 = sextuple_breeding(p1, p2, p3, p4, p5, p6)
@@ -150,10 +151,10 @@ def genetic_algorithm(population, r_mut, n_iter, goal):
         idx += 1
         if fitness(best, goal) == 0:
             pool.close()
-            return [best, score, h]
+            return [best, best_score, h]
     
     pool.close()
-    return [best, score, h]
+    return [best, best_score, h]
 
 from joblib import Parallel, delayed
 
@@ -194,8 +195,8 @@ def split_2d_array(big_array):
     return pop1, pop2, pop3, pop4
 
 def main():
-    N = 12
-    length = 12
+    N = 6
+    length = 300
     population = np.random.randint(2, size=(N, length))
     r_mut = .5
     n_iter = 10000
