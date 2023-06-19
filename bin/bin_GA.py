@@ -8,7 +8,6 @@ import time
 
 start_time = time.time()
 
-
 optfile = open("optimal_state.txt", "r")
 opt_str = optfile.read()
 opt_arr = np.array([i for i in opt_str if (i == '0' or i == '1')])
@@ -116,7 +115,7 @@ def genetic_algorithm(population, r_mut, n_iter):
     return [best, score, h]
 
 def main():
-    N = 80
+    N = 4
     length = 1536
     population = [generate_random_binary_string(length) for _ in range(N)] 
     r_mut = .4

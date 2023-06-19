@@ -28,6 +28,7 @@ def pso(n_sub, n_parts, n_iter):
                   'pbest': [-1]*n_sub,
                   'pbest_score': 0,
                   'v': [rand.randint(0, r_maxv) for _ in range(n_sub)]} for _ in range(n_sub)]
+                  
     h = conflicts(particles[0]['states'])
     for i in range(n_iter):
         for particle in particles:

@@ -14,7 +14,7 @@ This Python repository focuses on creating a calibrator application that optimiz
   - Also known as the minimum-variance distortionless response (MVDR) beamforming algorithm, the Capon beamformer offers better resolution than the Bartlett approach. However, it has higher complexity due to the need for full-rank matrix inversion. Recent advances in GPU computing have made real-time Capon beamforming more feasible. 
 - [MUSIC beamformer](https://sci-hub.se/10.1109/IBCAST.2014.6778172)
   - The MUSIC (MUltiple SIgnal Classification) beamforming algorithm starts by decomposing the covariance matrix for both the signal and noise parts. It uses the noise sub-space of the spatial covariance matrix in the denominator of the Capon algorithm, thus known as subspace           beamformer. This approach provides better Direction of Arrival (DOA) estimation compared to the Capon beamformer. The ESPRIT algorithm can be used as an alternative approach.
-- Artificial Intelligence
+- [Artificial Intelligence](https://sci-hub.se/10.1109/MAP.2020.3036097)
   - The ongoing trend in digital signal processing for DAA involves the use of Artificial Intelligence technologies.
 
 ## Problem Statement 📓

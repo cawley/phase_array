@@ -26,7 +26,6 @@ def h(state):
 def h2(state):
     return np.sum(abs(state - np.ones(np.shape(state))))
 
-
 # 5.3
 '''
 input:
