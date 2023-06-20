@@ -13,8 +13,9 @@ GAMMA = 0.1
 DISCOUNT = 0.95
 # Iteration count
 EPISODES = 25000
+SHOW_EVERY = 3000
 
-DISCRETE_OS_SIZE = [20, 20]
+DISCRETE_OS_SIZE = [20] * len(env.observation_space.high)
 discrete_os_win_size = (env.observation_space.high - env.observation_space.low)/DISCRETE_OS_SIZE
 
 # Exploration settings
@@ -28,11 +29,11 @@ q_table = np.random.uniform(low=-2, high=0, size=(DISCRETE_OS_SIZE + [env.action
 
 # Translating a continuous state to discrete one
 def get_discrete_state(state):
-    discrete_state = (state - env.observation_space.low)/discrete_os_win_size
+    discrete_state = (state[0] - env.observation_space.low)/discrete_os_win_size
     return tuple(discrete_state.astype(np.int))  # we use this tuple to look up the 3 Q values for the available actions in the q-table
 
 for episode in range(EPISODES):
-    state, _ = env.reset() # change this line
+    state, _ = env.reset()
     discrete_state = get_discrete_state(env.reset())
     done = False
 
