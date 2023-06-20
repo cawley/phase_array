@@ -2,7 +2,9 @@ import gym
 import numpy as np
 
 env = gym.make("MountainCar-v0")
-env.reset()
+state = env.reset()
+print(state)
+
 
 # Learning Rate Hyperparameter
 GAMMA = 0.1
@@ -30,6 +32,7 @@ def get_discrete_state(state):
     return tuple(discrete_state.astype(np.int))  # we use this tuple to look up the 3 Q values for the available actions in the q-table
 
 for episode in range(EPISODES):
+    state, _ = env.reset() # change this line
     discrete_state = get_discrete_state(env.reset())
     done = False
 
