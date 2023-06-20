@@ -8,6 +8,8 @@ from functools import partial
 import difflib
 import time
 import bin_splitGA_sextuplet_breeding
+import bin_SARR
+import bin_SIM
 
 optfile = open("optimal_state.txt", "r")
 opt_str = optfile.read()
@@ -29,8 +31,12 @@ def main():
     o1 = opt_arr[:length]
     pop1 = population
 
-    [b1, s1, h1] = bin_splitGA_sextuplet_breeding.genetic_algorithm(pop1, r_mut, n_iter, o1)
 
+    out_SARR = bin_SARR.steepestAscentRandomRestart(n_iter, np.squeeze(population[0, :]))
+    out_GA = bin_splitGA_sextuplet_breeding.genetic_algorithm(pop1, r_mut, n_iter, o1)
+    out_SIM = bin_SIM.simulatedAnnealing(n_iter, np.squeeze(population[0, :]))
+
+    return
 
 
     [b2, s2, h2] = genetic_algorithm(pop2, r_mut, n_iter, o2)

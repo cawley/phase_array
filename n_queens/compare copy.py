@@ -1,11 +1,9 @@
 import numpy as np
 import n_queens_SARR
-import n_queens_SARR_copy
 import n_queens_GA
 import n_queens_GAv2
 import n_queens_GAv2_copy
 import n_queens_SIM
-import n_queens_SIM_copy
 import n_queens_PSO
 import matplotlib.pyplot as plt
 
@@ -23,8 +21,8 @@ def main():
     mutationRate = 0.5
     state = np.random.randint(2, size=(length,))
     population = np.random.randint(2, size=(popSize, length))
-    n_queens_SIM_copy.simulatedAnnealing(maxItr=maxItr, state=state, tunneling_prob=0.0)
-    n_queens_SARR_copy.steepestAscentRandomRestart(maxItr=maxItr, state=state)
+    #n_queens_SIM_copy.simulatedAnnealing(maxItr=maxItr, state=state, tunneling_prob=0.0)
+    #n_queens_SARR_copy.steepestAscentRandomRestart(maxItr=maxItr, state=state)
     n_queens_GAv2_copy.geneticAlgorithm(population, N=length, populationSize=popSize, mutationRate=mutationRate, numRuns=100000)
     #convInfoGA = n_queens_GA.repeatGA(maxItr, numLoops, population=[initialState.copy() for _ in range(popSize)], numRuns=4000, mutationRate=mutationRate)
     convInfoGAv2 = n_queens_GAv2.repeatGAv2(maxItr, numLoops, population=[initialState.copy() for _ in range(popSize)], N=N, populationSize=popSize, numRuns=4000, mutationRate=mutationRate)

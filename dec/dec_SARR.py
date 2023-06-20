@@ -16,48 +16,49 @@ returns:
   h: the heuristic cost of the final state
   count: the number of steps taken
 '''
-def steepestAscent(state, convInfo, idx, totalItr, minh):
+def steepestAscent(state, convInfo, idx, totalItr, maxh):
 
+    M, N = np.shape(state)
     current = state.copy()
     count = 0
 
     while True:
         neighbor = current.copy()
-        neighborH = -utils.h2(current)
-        N = len(current)
+        neighborH = utils.h_dec(current)
 
         #find best neighbor
-        for i in range(N):
-            temp = current.copy()
+        for i in range(M):
+            for j in range(N):
+                temp = current.copy()
 
-            # move down
-            while (temp[i] != 0):
-                totalItr += 1
-                temp[i] -= 1
-                if -utils.h2(temp) > neighborH:
-                    neighbor = temp.copy()
-                    neighborH = -utils.h2(temp)
+                # move down
+                while (temp[i, j] >= 0):
+                    totalItr += 1
+                    temp[i, j] -= 1 / 64
+                    if utils.h_dec(temp) > neighborH:
+                        neighbor = temp.copy()
+                        neighborH = utils.h_dec(temp)
 
-            # move up
-            while (temp[i] != 2 - 1):
-                totalItr += 1
-                temp[i] += 1
-                if -utils.h2(temp) > neighborH:
-                    neighbor = temp.copy()
-                    neighborH = -utils.h2(temp)
+                # move up
+                while (temp[i, j] <= 1):
+                    totalItr += 1
+                    temp[i, j] += 1 / 64
+                    if utils.h_dec(temp) > neighborH:
+                        neighbor = temp.copy()
+                        neighborH = utils.h_dec(temp)
 
-        if neighborH <= -utils.h2(current):
-            return current, utils.h2(state), utils.h2(current), count, convInfo, idx, totalItr, minh
+        if neighborH <= utils.h_dec(current):
+            return current, utils.h_dec(state), utils.h_dec(current), count, convInfo, idx, totalItr, maxh
         
 
         current = neighbor.copy()
         count += 1
 
-        if utils.h2(current) < minh:
-            minh = utils.h2(current)
-            print('Run: {}, h: {}'.format(totalItr, minh))
+        if utils.h_dec(current) > maxh:
+            maxh = utils.h_dec(current)
+            print('Run: {}, h: {}'.format(totalItr, maxh))
 
-        convInfo[idx, :] = [totalItr, minh]
+        convInfo[idx, :] = [totalItr, maxh]
         idx += 1
 
 
@@ -81,24 +82,23 @@ def steepestAscentRandomRestart(maxItr, state, numRuns=1000, numRestarts=100):
     convInfo = np.zeros((10000, 2))
     idx = 0
 
-    N = len(state)
+    M, N = np.shape(state)
 
-    maxConflicts = utils.h2(np.zeros((N,)))
-    minh = utils.h2(state)
+    maxh = utils.h_dec(state)
 
     restarts = 0
     steps = 0
     totalItr = 0
 
-    convInfo[idx, :] = [totalItr, minh]
+    convInfo[idx, :] = [totalItr, maxh]
     idx += 1
     totalItr += 1
 
     for i in range(numRuns):
         # randomize the state
-        state = np.random.randint(low=0, high=2, size=(N,))
+        #state = np.random.randint(low=0, high=64, size=(M, N)) / 64
         for j in range(numRestarts):
-            arr, hInitial, currH, count, convInfo, idx, totalItr, minh = steepestAscent(state, convInfo, idx, totalItr, minh)
+            arr, hInitial, currH, count, convInfo, idx, totalItr, maxh = steepestAscent(state, convInfo, idx, totalItr, maxh)
             steps += count
 
             # check if the problem is solved
