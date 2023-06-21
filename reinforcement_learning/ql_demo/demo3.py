@@ -55,7 +55,7 @@ for episode in range(EPISODES):
         # Grab the max rated action
         # action = np.argmax(q_table[discrete_state])
 
-        new_state, reward, done, _ = env.step(action)
+        new_state, reward, done, truncated, _ = env.step(action)
         new_discrete_state = get_discrete_state(new_state)
         env.render()
         #new_q = (1 - LEARNING_RATE) * current_q + LEARNING_RATE * (reward + DISCOUNT * max_future_q)
