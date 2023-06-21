@@ -31,13 +31,14 @@ def geneticAlgorithm(population, N=8, populationSize=4, mutationRate=0.15, numRu
             weights[i] = utils.h_dec(population[i])
         
             totalItr += 1
-        print('Run: {}, h: {}'.format(totalItr, maxh))
 
         max_val = np.max(weights)
         max_ind = np.argmax(weights)
         super_child = population[max_ind]
 
-        if np.min(weights) == 0:
+        print('Run: {}, h: {}'.format(totalItr, max_val))
+
+        if max_val >= M * N - 1:
             print(super_child)
             return
         weights = np.power(weights, 3)
@@ -58,10 +59,10 @@ def geneticAlgorithm(population, N=8, populationSize=4, mutationRate=0.15, numRu
                 for k in range(N):
                     if (np.random.uniform(low=0, high=1) < mutationRate):
                         if (np.random.uniform(low=0, high=1)) < 0.5:
-                            if child[j, k] >= 1 / 64:
+                            if child[j, k] >= 0:
                                 child[j, k] -= 1 / 64
                         else:
-                            if child[j, k] <= 63 / 64:
+                            if child[j, k] <= 1:
                                 child[j, k] += 1 / 64
 
             children[i] = child

@@ -22,7 +22,7 @@ def h(arr):
 def main():
     N = 16
     population_size = 8
-    num_runs = 2000
+    num_runs = 3000
     arr_ones = np.ones((N, N))
     population = [arr_ones for _ in range(population_size)]
 
