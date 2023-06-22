@@ -5,7 +5,6 @@ env = gym.make("MountainCar-v0")
 state = env.reset()
 print(state)
 
-
 # Learning Rate Hyperparameter
 GAMMA = 0.1
 
@@ -29,7 +28,7 @@ q_table = np.random.uniform(low=-2, high=0, size=(DISCRETE_OS_SIZE + [env.action
 
 # Translating a continuous state to discrete one
 def get_discrete_state(state):
-    discrete_state = (state[0] - env.observation_space.low)/discrete_os_win_size
+    discrete_state = (state - env.observation_space.low)/discrete_os_win_size
     return tuple(discrete_state.astype(np.int))  # we use this tuple to look up the 3 Q values for the available actions in the q-table
 
 for episode in range(EPISODES):
