@@ -96,6 +96,10 @@ def main():
             print(f"Max Score Achieved after {elapsed} seconds on iteration {g} with: {best}")
             sys.exit(0)
 
+        else:
+            elapsed = end - start 
+            print(f"TEST FAILED Best Score: {h(best)} after {elapsed} seconds and {g} iterations.")
+
         # Replace population
         pop[:] = offspring
     return pop
