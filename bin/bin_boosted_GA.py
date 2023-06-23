@@ -1,4 +1,7 @@
 import sys
+import time
+
+start = time.time()
 
 def objective(individual):
     # Convert the list of bits to a 16x16 array of integers (each between 0 and 63)
@@ -88,7 +91,9 @@ def main():
                 print(f">{g}: New Best Score: {h(best)} {best} ")
 
         if abs(best.fitness.values[0]) < 1e-9:
-            print(f"Max Score Achieved on iteration {g} with: {best}")
+            end = time.time()
+            elapsed = end - start 
+            print(f"Max Score Achieved after {elapsed} seconds on iteration {g} with: {best}")
             sys.exit(0)
 
         # Replace population
