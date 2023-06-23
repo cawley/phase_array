@@ -24,14 +24,14 @@ import random
 import numpy as np
 
 # Problem constants
-ARRAY_SIZE = 4  # Size of the phase array
+ARRAY_SIZE = 16  # Size of the phase array
 BITS_PER_ENTRY = 6  # Number of bits per phase value
 
 # Genetic Algorithm constants
-POPULATION_SIZE = 100  # Number of individuals in population
+POPULATION_SIZE = 1000  # Number of individuals in population
 CROSSOVER_PROB = 0.5  # Probability of crossover
 MUTATION_PROB = 0.2  # Probability of mutation
-NGEN = 500  # Number of generations
+NGEN = 5000  # Number of generations
 
 # Create types
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))  # Minimization problem
