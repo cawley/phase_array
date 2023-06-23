@@ -1,5 +1,6 @@
 import sys
 import time
+from multiprocessing import Pool
 
 start = time.time()
 
@@ -64,7 +65,15 @@ def main():
     for ind in pop:
         ind.fitness.values = toolbox.evaluate(ind)
 
+    pool = Pool()
+
     for g in range(NGEN):
+        scores = pool.map(h, pop)
+
+        sorted_population = [x for _, x in sorted(zip(scores, pop), key=lambda pair: pair[0])]
+        elite_cutoff = int(len(sorted_population) * 0.0625) # This amounts to ~96 elite individuals (1/16)
+        elite = sorted_population[:elite_cutoff]
+
         offspring = toolbox.select(pop, len(pop))
         offspring = list(map(toolbox.clone, offspring))
 
@@ -79,6 +88,8 @@ def main():
             if random.random() < MUTATION_PROB:
                 toolbox.mutate(mutant)
                 del mutant.fitness.values
+
+        offspring = offspring[:len(offspring) - elite_cutoff] + elite
 
         # Evaluate individuals with an invalid fitness
         invalid_ind = [ind for ind in offspring if not ind.fitness.valid]
@@ -96,7 +107,8 @@ def main():
             print(f"Max Score Achieved after {elapsed} seconds on iteration {g} with: {best}")
             sys.exit(0)
 
-        else:
+        if abs(best.fitness.values[0]) >= 1e-9 and g == NGEN:
+            end = time.time()
             elapsed = end - start 
             print(f"TEST FAILED Best Score: {h(best)} after {elapsed} seconds and {g} iterations.")
 
