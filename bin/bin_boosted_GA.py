@@ -128,7 +128,7 @@ def main(MUTATION_PROB):
 
 # Run the algorithm
 if __name__ == "__main__":
-    mutation_probs = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8]  # Or whatever values you want to test
+    mutation_probs = [0.2, 0.25, 0.3, 0.35, 0.4, 0.5, 0.6]  # Or whatever values you want to test
     results = []
     for mut_prob in mutation_probs:
         print(f'Running with MUTATION_PROB = {mut_prob}')
@@ -139,7 +139,7 @@ if __name__ == "__main__":
     for idx, (mut_prob, x, y, elapsed) in enumerate(results):
         axs[idx].plot(x, y)
         axs[idx].set_title(f'Scores Across Generations (Mutation Prob: {mut_prob})')
-        axs[idx].text(0.5, -0.1, f"Elapsed Time: {elapsed}", transform=axs[idx].transAxes, ha='center')
+        axs[idx].text(0.5, -0.1, f"Elapsed Time: {elapsed}", transform=axs[idx].transAxes, ha='right')
 
 
     plt.tight_layout()
