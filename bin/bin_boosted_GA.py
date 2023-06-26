@@ -29,13 +29,13 @@ import random
 import numpy as np
 
 # Problem constants
-ARRAY_SIZE = 16  # Size of the phase array
+ARRAY_SIZE = 6  # Size of the phase array
 BITS_PER_ENTRY = 6  # Number of bits per phase value
 
 # Genetic Algorithm constants
-POPULATION_SIZE = 1000  # Number of individuals in population
+POPULATION_SIZE = 100  # Number of individuals in population
 CROSSOVER_PROB = 0.5  # Probability of crossover
-MUTATION_PROB = 0.2 # Probability of mutation
+# MUTATION_PROB = 0.5 # Probability of mutation
 NGEN = 10000  # Number of generations
 
 # Create types
@@ -57,12 +57,13 @@ toolbox.register("mate", tools.cxTwoPoint)
 toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
 toolbox.register("select", tools.selTournament, tournsize=3)
 
-def main():
+def main(MUTATION_PROB):
     pop = toolbox.population(n=POPULATION_SIZE)
 
     best = pop[0]
 
-    points = {'x' : [0], 'y': [1536]}
+    x = []
+    y = []
 
     # Evaluate the entire population
     for ind in pop:
@@ -102,29 +103,38 @@ def main():
         for ind in pop:
             if h(ind) < h(best):
                 best = ind
-                points['x'].append(g)
-                points['y'].append(h(best))
+                x.append(g)
+                y.append(h(best)[0])
                 print(f">{g}: New Best Score: {h(best)} {best} ")
 
         if abs(best.fitness.values[0]) < 1e-9:
             end = time.time()
             elapsed = end - start 
             print(f"Max Score Achieved after {elapsed} seconds on iteration {g} with: {best}")
+            plt.plot(x, y)
+            plt.title('Scores Across Generations')
+            plt.show()
             sys.exit(0)
 
         if abs(best.fitness.values[0]) >= 1e-9 and g == NGEN:
             end = time.time()
             elapsed = end - start 
             print(f"TEST FAILED Best Score: {h(best)} after {elapsed} seconds and {g} iterations.")
-
-        plt.plot(points['x'], points['y'])
-        plt.title('Scores Across Generations')
-        plt.show()
+            plt.plot(x, y)
+            plt.title(f'Scores Across Generations (Mutation Prob: {MUTATION_PROB})')
+            plt.show()
+            sys.exit(0)
 
         # Replace population
         pop[:] = offspring
+    plt.plot(x, y)
+    plt.title('Scores Across Generations')
+    plt.show()
     return pop
 
 # Run the algorithm
 if __name__ == "__main__":
-    main()
+    mutation_probs = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]  # Or whatever values you want to test
+    for mut_prob in mutation_probs:
+        print(f'Running with MUTATION_PROB = {mut_prob}')
+        main(mut_prob)
