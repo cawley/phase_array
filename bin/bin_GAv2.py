@@ -40,7 +40,7 @@ def geneticAlgorithm(population, N=8, populationSize=4, mutationRate=0.15, numRu
         if np.min(weights) == 0:
             print(super_child)
             return
-        weights = np.power(weights, 3)
+        weights = np.power(weights, 2)
         weights = weights / np.linalg.norm(weights, ord=1)
 
         children = [None] * populationSize
