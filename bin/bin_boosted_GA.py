@@ -29,11 +29,11 @@ import random
 import numpy as np
 
 # Problem constants
-ARRAY_SIZE = 6  # Size of the phase array
+ARRAY_SIZE = 10  # Size of the phase array
 BITS_PER_ENTRY = 6  # Number of bits per phase value
 
 # Genetic Algorithm constants
-POPULATION_SIZE = 100  # Number of individuals in population
+POPULATION_SIZE = 1000  # Number of individuals in population
 CROSSOVER_PROB = 0.5  # Probability of crossover
 # MUTATION_PROB = 0.5 # Probability of mutation
 NGEN = 10000  # Number of generations
@@ -57,7 +57,12 @@ toolbox.register("mate", tools.cxTwoPoint)
 toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
 toolbox.register("select", tools.selTournament, tournsize=3)
 
+setup = time.time()
+stime = setup - start
+
 def main(MUTATION_PROB):
+    start = time.time()
+
     pop = toolbox.population(n=POPULATION_SIZE)
 
     best = pop[0]
@@ -107,7 +112,7 @@ def main(MUTATION_PROB):
                 best = ind
                 x.append(g)
                 y.append(h(best)[0])
-                print(f">{g}: New Best Score: {h(best)} {best} ")
+                # print(f">{g}: New Best Score: {h(best)} {best} ")
 
         if abs(best.fitness.values[0]) < 1e-9:
             end = time.time()
@@ -118,7 +123,7 @@ def main(MUTATION_PROB):
 
         if abs(best.fitness.values[0]) >= 1e-9 and g == NGEN:
             end = time.time()
-            elapsed = end - start 
+            elapsed = end - start
             print(f"TEST FAILED Best Score: {h(best)} after {elapsed} seconds and {g} iterations.")
             break
         # Replace population
@@ -128,7 +133,7 @@ def main(MUTATION_PROB):
 
 # Run the algorithm
 if __name__ == "__main__":
-    mutation_probs = [0.2, 0.25, 0.3, 0.35, 0.4, 0.5, 0.6]  # Or whatever values you want to test
+    mutation_probs = [0.3, 0.35, 0.4, 0.5, 0.6]  # Or whatever values you want to test
     results = []
     for mut_prob in mutation_probs:
         print(f'Running with MUTATION_PROB = {mut_prob}')
@@ -141,6 +146,7 @@ if __name__ == "__main__":
         axs[idx].set_title(f'Scores Across Generations (Mutation Prob: {mut_prob})')
         axs[idx].text(0.5, -0.1, f"Elapsed Time: {elapsed}", transform=axs[idx].transAxes, ha='right')
 
+    print(f"Setup time: {stime}")
 
     plt.tight_layout()
     plt.show()
