@@ -71,6 +71,8 @@ def main(MUTATION_PROB):
 
     pool = Pool()
 
+    elapsed = 0
+    
     for g in range(NGEN):
         scores = pool.map(h, pop)
 
@@ -111,30 +113,33 @@ def main(MUTATION_PROB):
             end = time.time()
             elapsed = end - start 
             print(f"Max Score Achieved after {elapsed} seconds on iteration {g} with: {best}")
-            plt.plot(x, y)
-            plt.title('Scores Across Generations')
-            plt.show()
-            sys.exit(0)
+            g = NGEN
+            break
 
         if abs(best.fitness.values[0]) >= 1e-9 and g == NGEN:
             end = time.time()
             elapsed = end - start 
             print(f"TEST FAILED Best Score: {h(best)} after {elapsed} seconds and {g} iterations.")
-            plt.plot(x, y)
-            plt.title(f'Scores Across Generations (Mutation Prob: {MUTATION_PROB})')
-            plt.show()
-            sys.exit(0)
-
+            break
         # Replace population
         pop[:] = offspring
-    plt.plot(x, y)
-    plt.title('Scores Across Generations')
-    plt.show()
-    return pop
+    pool.close()
+    return x, y, elapsed
 
 # Run the algorithm
 if __name__ == "__main__":
-    mutation_probs = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]  # Or whatever values you want to test
+    mutation_probs = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8]  # Or whatever values you want to test
+    results = []
     for mut_prob in mutation_probs:
         print(f'Running with MUTATION_PROB = {mut_prob}')
-        main(mut_prob)
+        x, y, e = main(mut_prob)
+        results.append((mut_prob, x, y, e))
+
+    fig, axs = plt.subplots(len(mutation_probs), 1, figsize=(10, len(mutation_probs) * 5))
+    for idx, (mut_prob, x, y, elapsed) in enumerate(results):
+        axs[idx].plot(x, y)
+        axs[idx].set_title(f'Scores Across Generations (Mutation Prob: {mut_prob})')
+        axs[idx].text(0.5, -0.1, f"Elapsed Time: {elapsed}", transform=ax.transAxes, ha='center')
+
+    plt.tight_layout()
+    plt.show()
