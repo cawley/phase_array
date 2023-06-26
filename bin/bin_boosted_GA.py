@@ -1,6 +1,7 @@
 import sys
 import time
 from multiprocessing import Pool
+from matplotlib import pyplot as plt
 
 start = time.time()
 
@@ -34,8 +35,8 @@ BITS_PER_ENTRY = 6  # Number of bits per phase value
 # Genetic Algorithm constants
 POPULATION_SIZE = 1000  # Number of individuals in population
 CROSSOVER_PROB = 0.5  # Probability of crossover
-MUTATION_PROB = 0.1 # Probability of mutation
-NGEN = 5000  # Number of generations
+MUTATION_PROB = 0.2 # Probability of mutation
+NGEN = 10000  # Number of generations
 
 # Create types
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))  # Minimization problem
@@ -60,6 +61,8 @@ def main():
     pop = toolbox.population(n=POPULATION_SIZE)
 
     best = pop[0]
+
+    points = {'x' : [0], 'y': [1536]}
 
     # Evaluate the entire population
     for ind in pop:
@@ -99,6 +102,8 @@ def main():
         for ind in pop:
             if h(ind) < h(best):
                 best = ind
+                points['x'].append(g)
+                points['y'].append(h(best))
                 print(f">{g}: New Best Score: {h(best)} {best} ")
 
         if abs(best.fitness.values[0]) < 1e-9:
@@ -111,6 +116,10 @@ def main():
             end = time.time()
             elapsed = end - start 
             print(f"TEST FAILED Best Score: {h(best)} after {elapsed} seconds and {g} iterations.")
+
+        plt.plot(points['x'], points['y'])
+        plt.title('Scores Across Generations')
+        plt.show()
 
         # Replace population
         pop[:] = offspring
