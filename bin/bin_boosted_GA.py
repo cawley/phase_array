@@ -139,7 +139,8 @@ if __name__ == "__main__":
     for idx, (mut_prob, x, y, elapsed) in enumerate(results):
         axs[idx].plot(x, y)
         axs[idx].set_title(f'Scores Across Generations (Mutation Prob: {mut_prob})')
-        axs[idx].text(0.5, -0.1, f"Elapsed Time: {elapsed}", transform=ax.transAxes, ha='center')
+        axs[idx].text(0.5, -0.1, f"Elapsed Time: {elapsed}", transform=axs[idx].transAxes, ha='center')
+
 
     plt.tight_layout()
     plt.show()
