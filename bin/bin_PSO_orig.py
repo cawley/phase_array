@@ -110,7 +110,6 @@ def pso(n_sub, n_parts, n_iter):
                 h = fitness(particles[j]["states"])
 
         convInfo[i, :] = [i, h]
-
     return gbest, h, convInfo
 
 
