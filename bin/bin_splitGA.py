@@ -7,15 +7,12 @@ from numpy import nonzero
 import time
 
 start_time = time.time()
-
 optfile = open("optimal_state.txt", "r")
 opt_str = optfile.read()
 opt_arr = np.array([i for i in opt_str if (i == "0" or i == "1")])
 opt_int = [int(i) for i in opt_arr]
-
 opt_arr_copy = opt_arr[:100]
 opt_arr = opt_arr_copy
-
 inpfile = open("in.txt", "r")
 inp_str = inpfile.read()
 
