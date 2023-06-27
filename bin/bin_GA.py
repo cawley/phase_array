@@ -7,11 +7,9 @@ from numpy import nonzero
 import time
 
 start_time = time.time()
-
 optfile = open("optimal_state.txt", "r")
 opt_str = optfile.read()
 opt_arr = np.array([i for i in opt_str if (i == "0" or i == "1")])
-
 inpfile = open("in.txt", "r")
 inp_str = inpfile.read()
 
