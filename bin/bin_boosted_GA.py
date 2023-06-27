@@ -68,8 +68,8 @@ toolbox.register("select", tools.selTournament, tournsize=3)
 setup = time.time()
 stime = setup - start
 
-def main(MUTATION_PROB):
-    start = time.time()
+def main(MUTATION_PROB, CROSSOVER_PROB, POPULATION_SIZE):
+    start = time.time() 
 
     pop = toolbox.population(n=POPULATION_SIZE)
 
@@ -139,17 +139,19 @@ def main(MUTATION_PROB):
 
 # Run the algorithm
 if __name__ == "__main__":
-    mutation_probs = [0.4, 0.45, 0.5, 0.55, 0.6, 0.65]  # Or whatever values you want to test
-    crossover_probs = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
-    pop_sizes = []
+    mutation_probs = [0.4]  # Or whatever values you want to test
+    crossover_probs = [0.1]
+    pop_sizes = [10]
     results = []
     for mut_prob in mutation_probs:
-        print(f'Running with MUTATION_PROB = {mut_prob}')
-        x, y, e = main(mut_prob)
-        results.append((mut_prob, x, y, e))
+        for cross_prob in crossover_probs:
+            for pop_size in pop_sizes:
+                print(f'Running with: \n MUTATION_PROB = {mut_prob} \n CROSSOVER_PROB = {cross_prob} \n POPULATION_SIZE = {pop_size} \n')
+                x, y, e = main(mut_prob, cross_prob, pop_size)
+                results.append((mut_prob, cross_prob, pop_size, x, y, e))
 
     fig, axs = plt.subplots(len(mutation_probs), 1, figsize=(10, len(mutation_probs) * 5))
-    for idx, (mut_prob, x, y, elapsed) in enumerate(results):
+    for idx, (mut_prob, cross_prob, pop_size, x, y, elapsed) in enumerate(results):
         axs[idx].plot(x, y)
         axs[idx].set_title(f'Scores Across Generations (Mutation Prob: {mut_prob})')
         axs[idx].text(0.5, -0.1, f"Elapsed Time: {elapsed}", transform=axs[idx].transAxes, ha='right')
