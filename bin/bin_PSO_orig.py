@@ -14,12 +14,10 @@ n_sub = 1536
 optfile = open("optimal_state.txt", "r")
 opt_str = optfile.read()
 opt_arr = np.array([i for i in opt_str if (i == "0" or i == "1")])
-
 opt_arr_copy = opt_arr[:n_sub]
 opt_arr = opt_arr_copy
 opt_int = [int(i) for i in opt_arr_copy]
 opt_int = np.zeros(n_sub)
-
 inpfile = open("in.txt", "r")
 inp_str = inpfile.read()
 
