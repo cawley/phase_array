@@ -19,12 +19,10 @@ def split_array(arr):
 
 
 start_time = time.time()
-
 optfile = open("optimal_state.txt", "r")
 opt_str = optfile.read()
 opt_arr = np.array([i for i in opt_str if (i == "0" or i == "1")])
 o1, o2, o3, o4 = split_array(opt_arr)
-
 inpfile = open("in.txt", "r")
 inp_str = inpfile.read()
 
