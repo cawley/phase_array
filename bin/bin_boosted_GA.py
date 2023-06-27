@@ -14,6 +14,7 @@ def objective(individual):
 
     return value,
 
+'''
 def h(individual):
     array = np.array(individual)
     expected = np.ones(array.shape)
@@ -23,17 +24,24 @@ def h(individual):
         energy_matrix[i] = 1 - array[i]
 
     return energy_matrix.sum(),
+'''
+
+def h(individual):
+    array = np.array(individual)
+    energy_matrix = 1 - array
+    return energy_matrix.sum(),
+
 
 from deap import base, creator, tools
 import random
 import numpy as np
 
 # Problem constants
-ARRAY_SIZE = 10  # Size of the phase array
+ARRAY_SIZE = 8  # Size of the phase array
 BITS_PER_ENTRY = 6  # Number of bits per phase value
 
 # Genetic Algorithm constants
-POPULATION_SIZE = 1000  # Number of individuals in population
+POPULATION_SIZE = 100  # Number of individuals in population
 CROSSOVER_PROB = 0.5  # Probability of crossover
 # MUTATION_PROB = 0.5 # Probability of mutation
 NGEN = 10000  # Number of generations
@@ -75,9 +83,7 @@ def main(MUTATION_PROB):
         ind.fitness.values = toolbox.evaluate(ind)
 
     pool = Pool()
-
     elapsed = 0
-    
     for g in range(NGEN):
         scores = pool.map(h, pop)
 
@@ -112,7 +118,7 @@ def main(MUTATION_PROB):
                 best = ind
                 x.append(g)
                 y.append(h(best)[0])
-                # print(f">{g}: New Best Score: {h(best)} {best} ")
+                print(f">{g}: New Best Score: {h(best)} {best} ")
 
         if abs(best.fitness.values[0]) < 1e-9:
             end = time.time()
@@ -133,7 +139,9 @@ def main(MUTATION_PROB):
 
 # Run the algorithm
 if __name__ == "__main__":
-    mutation_probs = [0.3, 0.35, 0.4, 0.5, 0.6]  # Or whatever values you want to test
+    mutation_probs = [0.4, 0.45, 0.5, 0.55, 0.6, 0.65]  # Or whatever values you want to test
+    crossover_probs = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+    pop_sizes = []
     results = []
     for mut_prob in mutation_probs:
         print(f'Running with MUTATION_PROB = {mut_prob}')
