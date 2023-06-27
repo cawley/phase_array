@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def h(individual):
     array = np.array(individual)
     expected = np.ones(individual.shape)
@@ -10,6 +11,7 @@ def h(individual):
 
     return energy_matrix.sum
 
+
 def h(individual):
     array = np.array(individual)
     expected = np.ones(individual.shape)
@@ -19,6 +21,7 @@ def h(individual):
         energy_matrix[i] = 1 - array[i]
 
     return energy_matrix.sum()
+
 
 from deap import base, creator, tools
 import random
@@ -44,11 +47,17 @@ toolbox = base.Toolbox()
 toolbox.register("attr_bool", random.randint, 0, 1)
 
 # Structure initializers: define how an individual and the population are created
-toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_bool, ARRAY_SIZE * ARRAY_SIZE * BITS_PER_ENTRY)
+toolbox.register(
+    "individual",
+    tools.initRepeat,
+    creator.Individual,
+    toolbox.attr_bool,
+    ARRAY_SIZE * ARRAY_SIZE * BITS_PER_ENTRY,
+)
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
 # Operator registration: define the genetic operations
-toolbox.register("evaluate", h)  
+toolbox.register("evaluate", h)
 toolbox.register("mate", tools.cxTwoPoint)
 toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
 toolbox.register("select", tools.selTournament, tournsize=3)

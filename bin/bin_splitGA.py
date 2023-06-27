@@ -10,7 +10,7 @@ start_time = time.time()
 
 optfile = open("optimal_state.txt", "r")
 opt_str = optfile.read()
-opt_arr = np.array([i for i in opt_str if (i == '0' or i == '1')])
+opt_arr = np.array([i for i in opt_str if (i == "0" or i == "1")])
 opt_int = [int(i) for i in opt_arr]
 
 opt_arr_copy = opt_arr[:100]
@@ -19,14 +19,18 @@ opt_arr = opt_arr_copy
 inpfile = open("in.txt", "r")
 inp_str = inpfile.read()
 
+
 def generate_random_binary_string(n):
-    return np.array([rand.choice('01') for _ in range(n)])
+    return np.array([rand.choice("01") for _ in range(n)])
+
 
 def generate_random_bin_array(n):
     return np.zeros(n)
 
+
 # Fitness dictionary to store previously computed fitness scores
 fitness_dict = {}
+
 
 def fitness(state):
     tup = tuple(state)
@@ -38,30 +42,33 @@ def fitness(state):
         fitness_dict[tup] = fit_score
         return fit_score
 
+
 def roulette_selection(population, scores):
     aggregate = 0.0
     for i in range(len(population)):
         aggregate += scores[i]
     prev = 0.0
     p_state = []
-    for i in range (len(population)):
+    for i in range(len(population)):
         if aggregate != 0:
-            p_state.append(prev + (scores[i] / aggregate)) 
+            p_state.append(prev + (scores[i] / aggregate))
         else:
             p_state.append(prev)
         prev = p_state[i]
     r = rand.uniform(0, 1)
-    for i in range (len(population)):
+    for i in range(len(population)):
         if r < p_state[i]:
             temp = population[i]
             return temp
 
+
 def breed(p1, p2):
-    pivot = rand.randint(1, int(p1.size/2))
-    pivot2 = rand.randint(int(p1.size/2), p1.size - 2)
+    pivot = rand.randint(1, int(p1.size / 2))
+    pivot2 = rand.randint(int(p1.size / 2), p1.size - 2)
     c1 = np.concatenate((p1[:pivot], p2[pivot:]))
     c2 = np.concatenate((p2[:pivot2], p1[pivot2:]))
     return [c1, c2]
+
 
 def swapmutation(c1, r_mut):
     r = rand.uniform(0, 1)
@@ -71,14 +78,17 @@ def swapmutation(c1, r_mut):
             c1[rpos1], c1[rpos2] = c1[rpos2], c1[rpos1]
     return c1
 
+
 def random_reset_mutation(c1, r_mut):
-    for i in range (c1.size):
+    for i in range(c1.size):
         r = rand.uniform(0, 1)
         if r < r_mut:
             c1[i] = 1 if c1[i] == 0 else 0
     return c1
 
+
 from multiprocessing import Pool
+
 
 def genetic_algorithm(population, r_mut, n_iter):
     idx = 0
@@ -87,7 +97,7 @@ def genetic_algorithm(population, r_mut, n_iter):
     [best, score] = population[0], fitness(population[0])
     h = fitness(population[0])
 
-    mut = h/300
+    mut = h / 300
 
     # Create a multiprocessing Pool
     pool = Pool()
@@ -96,27 +106,33 @@ def genetic_algorithm(population, r_mut, n_iter):
         # Use pool.map() to compute fitness scores in parallel
         scores = pool.map(fitness, population)
 
-        #check for new best
+        # check for new best
         for i in range(len(population)):
             if scores[i] < score:
                 best, score = population[i], scores[i]
                 print(">%d, new best f(%s) = %f" % (gen, population[i], scores[i]))
 
-        sorted_population = [x for _, x in sorted(zip(scores, population), key=lambda pair: pair[0])]
-        elite_cutoff = int(len(sorted_population) * 0.0625) # This amounts to ~96 elite individuals (1/16)
+        sorted_population = [
+            x for _, x in sorted(zip(scores, population), key=lambda pair: pair[0])
+        ]
+        elite_cutoff = int(
+            len(sorted_population) * 0.0625
+        )  # This amounts to ~96 elite individuals (1/16)
         elite = sorted_population[:elite_cutoff]
-        
-        parents = [roulette_selection(population, scores) for _ in range(len(population))]
+
+        parents = [
+            roulette_selection(population, scores) for _ in range(len(population))
+        ]
 
         children = list()
         for i in range(0, len(parents) - 1, 2):
-            p1, p2 = parents[i], parents[i+1] 
+            p1, p2 = parents[i], parents[i + 1]
             c1, c2 = breed(p1, p2)
             c1 = swapmutation(c1, r_mut)
             c2 = random_reset_mutation(c2, r_mut)
             children.append(c1)
             children.append(c2)
-        children = children[:len(children) - elite_cutoff] + elite
+        children = children[: len(children) - elite_cutoff] + elite
         population = children.copy()
 
         for i in range(len(population)):
@@ -127,7 +143,7 @@ def genetic_algorithm(population, r_mut, n_iter):
         if fitness(best) == 0:
             pool.close()
             return [best, score, h]
-    
+
     pool.close()
     return [best, score, h]
 
@@ -135,8 +151,8 @@ def genetic_algorithm(population, r_mut, n_iter):
 def main():
     N = 4
     length = 100
-    population = [generate_random_bin_array(length) for _ in range(N)] 
-    r_mut = .5
+    population = [generate_random_bin_array(length) for _ in range(N)]
+    r_mut = 0.5
     n_iter = 10000
     print(fitness(population[0]))
     [best, score, h] = genetic_algorithm(population, r_mut, n_iter)
