@@ -7,7 +7,6 @@ optfile = open("optimal_state.txt", "r")
 opt_str = optfile.read()
 opt_lst = list(opt_str)
 opt_arr = [i for i in opt_lst if (i == "0" or i == "1")]
-
 inpfile = open("in.txt", "r")
 inp_str = inpfile.read()
 
