@@ -42,7 +42,6 @@ def simulatedAnnealing(maxItr, state, num_runs=1000, tunneling_prob=0):
     nexth = utils.h_dec(next)
     total_itr += 1
 
-
     deltaE = nexth - currh
     if T != 0:
       P = 1 / (1 + np.exp(-deltaE / T))

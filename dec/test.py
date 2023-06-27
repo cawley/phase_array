@@ -22,12 +22,12 @@ def h(arr):
 def main():
     N = 16
     population_size = 8
-    num_runs = 3000
+    num_runs = 14000
     arr_ones = np.ones((N, N))
     population = [arr_ones for _ in range(population_size)]
 
     #out_SARR = dec_SARR.steepestAscentRandomRestart(num_runs, arr_ones)
-    out_SIM = dec_SIM.simulatedAnnealing(num_runs, arr_ones)
+    #out_SIM = dec_SIM.simulatedAnnealing(num_runs, arr_ones)
     out_GA = dec_GAv2.geneticAlgorithm(population, N, population_size)
 
     return
