@@ -142,11 +142,11 @@ def main(MUTATION_PROB, CROSSOVER_PROB, POPULATION_SIZE):
     return x, y, elapsed
 
 
-# Run the algorithm
 if __name__ == "__main__":
     mutation_probs = [0.4]
     crossover_probs = [0.1]
     pop_sizes = [10]
+    array
     results = []
     for mut_prob in mutation_probs:
         for cross_prob in crossover_probs:
