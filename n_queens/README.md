@@ -1,3 +1,5 @@
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 # phase_array
 ### Hi! :blush: Welcome to the n_queens README.md! 😲 
 This repository represents an attempt at general solution to optimal arrangement of nodes in a hypothetical phase array.
