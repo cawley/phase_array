@@ -2,6 +2,8 @@ import numpy as np
 import time
 import random
 
+start = time.time()
+
 
 def relu(Z):
     return np.maximum(0, Z)
@@ -311,5 +313,9 @@ def model(
             print("Cost after epoch %i: %f" % (i, cost))
         if print_cost and i % 100 == 0:
             costs.append(cost)
+
+    end = time.time()
+    elapsed = end - start
+    print(f"Runtime: {elapsed} seconds.")
 
     return parameters
