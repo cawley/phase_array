@@ -1,7 +1,7 @@
 import utils
 import numpy as np
 
-'''
+"""
 The main steepest ascent algorithm. This function is called after every restart.
 
 input: 
@@ -15,9 +15,10 @@ returns:
   current: the final state
   h: the heuristic cost of the final state
   count: the number of steps taken
-'''
-def steepestAscent(state, convInfo, idx, totalItr, minh):
+"""
 
+
+def steepestAscent(state, convInfo, idx, totalItr, minh):
     current = state.copy()
     count = 0
 
@@ -26,12 +27,12 @@ def steepestAscent(state, convInfo, idx, totalItr, minh):
         neighborH = -utils.h(current)
         N = len(current)
 
-        #find best neighbor
+        # find best neighbor
         for i in range(N):
             temp = current.copy()
 
             # move down
-            while (temp[i] != 0):
+            while temp[i] != 0:
                 totalItr += 1
                 temp[i] -= 1
                 if -utils.h(temp) > neighborH:
@@ -39,7 +40,7 @@ def steepestAscent(state, convInfo, idx, totalItr, minh):
                     neighborH = -utils.h(temp)
 
             # move up
-            while (temp[i] != N - 1):
+            while temp[i] != N - 1:
                 totalItr += 1
                 temp[i] += 1
                 if -utils.h(temp) > neighborH:
@@ -47,8 +48,16 @@ def steepestAscent(state, convInfo, idx, totalItr, minh):
                     neighborH = -utils.h(temp)
 
         if neighborH <= -utils.h(current):
-            return current, utils.h(state), utils.h(current), count, convInfo, idx, totalItr, minh
-        
+            return (
+                current,
+                utils.h(state),
+                utils.h(current),
+                count,
+                convInfo,
+                idx,
+                totalItr,
+                minh,
+            )
 
         current = neighbor.copy()
         count += 1
@@ -60,7 +69,7 @@ def steepestAscent(state, convInfo, idx, totalItr, minh):
         idx += 1
 
 
-'''
+"""
 Function implementing random restarts
 
 input:
@@ -74,9 +83,10 @@ returns:
   estimateSteps: Empirical estimate of the expected total number of steps across restarts
   convInfo: (n x 2) matrix of minimum conflicts and number of objective function calls
 
-'''
-def steepestAscentRandomRestart(maxItr, state, numRuns=1000, numRestarts=100):
+"""
 
+
+def steepestAscentRandomRestart(maxItr, state, numRuns=1000, numRestarts=100):
     convInfo = np.zeros((10000, 2))
     idx = 0
 
@@ -97,7 +107,9 @@ def steepestAscentRandomRestart(maxItr, state, numRuns=1000, numRestarts=100):
         # randomize the state
         state = np.random.randint(low=0, high=N, size=(N,))
         for j in range(numRestarts):
-            arr, hInitial, currH, count, convInfo, idx, totalItr, minh = steepestAscent(state, convInfo, idx, totalItr, minh)
+            arr, hInitial, currH, count, convInfo, idx, totalItr, minh = steepestAscent(
+                state, convInfo, idx, totalItr, minh
+            )
             steps += count
 
             # check if the problem is solved
@@ -108,7 +120,7 @@ def steepestAscentRandomRestart(maxItr, state, numRuns=1000, numRestarts=100):
                 state = np.random.randint(low=0, high=N, size=(N,))
 
             restarts += 1
-        
+
         if convInfo[idx - 1, 0] >= maxItr:
             break
 
@@ -118,7 +130,7 @@ def steepestAscentRandomRestart(maxItr, state, numRuns=1000, numRestarts=100):
     return estimateRestarts, estimateSteps, convInfo, idx
 
 
-'''
+"""
 Average results from numLoops runs of the algorithm
 
 input:
@@ -130,25 +142,31 @@ input:
 returns:
   convInfo: (n x 2) matrix of minimum conflicts and number of objective function calls, averaged over numLoops calls
 
-'''
+"""
+
+
 def repeatSARR(maxItr, numLoops, state, numRuns, numRestarts):
-    estimateRestarts, estimateSteps, convInfoFinal, len = steepestAscentRandomRestart(maxItr, state, numRuns=numRuns)
-    
+    estimateRestarts, estimateSteps, convInfoFinal, len = steepestAscentRandomRestart(
+        maxItr, state, numRuns=numRuns
+    )
+
     minLen = len
     convInfoFinal = convInfoFinal[:minLen]
     print("Repeat SARR")
     for i in range(numLoops - 1):
-        estimateRestarts, estimateSteps, convInfo, len = steepestAscentRandomRestart(maxItr, state, numRuns=100)
+        estimateRestarts, estimateSteps, convInfo, len = steepestAscentRandomRestart(
+            maxItr, state, numRuns=100
+        )
 
         if len < minLen:
             minLen = len
-        
+
         convInfo = convInfo[:minLen]
         convInfoFinal = convInfoFinal[:minLen]
 
         convInfoFinal += convInfo
         print(i)
-    
+
     convInfoFinal /= numLoops
 
     return convInfoFinal
