@@ -30,7 +30,7 @@ import random
 import numpy as np
 
 # Problem constants
-ARRAY_SIZE = 8  # Size of the phase array
+ARRAY_SIZE = 16  # Size of the phase array
 BITS_PER_ENTRY = 6  # Number of bits per phase value
 
 # Genetic Algorithm constants
@@ -119,23 +119,27 @@ def main(MUTATION_PROB, CROSSOVER_PROB, POPULATION_SIZE):
                 best = ind
                 x.append(g)
                 y.append(h(best)[0])
-                print(f">{g}: New Best Score: {h(best)} {best} ")
+                # print(f">{g}: New Best Score: {h(best)} {best} ")
 
         if abs(best.fitness.values[0]) < 1e-9:
             end = time.time()
             elapsed = end - start
+            """
             print(
-                f"Max Score Achieved after {elapsed} seconds on iteration {g} with: {best}"
+                f"Max Score Achieved after {elapsed} seconds on iteration {g}"  # with: {best}"
             )
+            """
             g = NGEN
             break
 
         if abs(best.fitness.values[0]) >= 1e-9 and g == NGEN:
             end = time.time()
             elapsed = end - start
+            """
             print(
                 f"TEST FAILED Best Score: {h(best)} after {elapsed} seconds and {g} iterations."
             )
+            """
             break
         pop[:] = offspring
     pool.close()
@@ -143,10 +147,9 @@ def main(MUTATION_PROB, CROSSOVER_PROB, POPULATION_SIZE):
 
 
 if __name__ == "__main__":
-    mutation_probs = [0.4]
-    crossover_probs = [0.1]
-    pop_sizes = [10]
-    array
+    mutation_probs = [0.4, 0.45, 0.5, 0.55, 0.6, 0.65]
+    crossover_probs = [0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
+    pop_sizes = [100, 200, 300, 400, 500, 600, 700]
     results = []
     for mut_prob in mutation_probs:
         for cross_prob in crossover_probs:
@@ -157,6 +160,29 @@ if __name__ == "__main__":
                 x, y, e = main(mut_prob, cross_prob, pop_size)
                 results.append((mut_prob, cross_prob, pop_size, x, y, e))
 
+    sorted_results = [
+        (mut_prob, cross_prob, pop_size, x, y, elapsed)
+        for mut_prob, cross_prob, pop_size, x, y, elapsed in sorted(
+            results, key=lambda pair: pair[3][-1]
+        )
+    ]
+
+    print("\n")
+
+    for _, (mut_prob, cross_prob, pop_size, x, y, elapsed) in enumerate(sorted_results):
+        print(
+            f"MUT: {mut_prob}, CROSS: {cross_prob}, POPSIZE: {pop_size}, ITERS: { x[-1] }, TIME: {e}"
+        )
+
+    with open("bga_sorted_out.txt", "w") as f:
+        for mut_prob, cross_prob, pop_size, x, y, elapsed in sorted_results:
+            f.write(
+                f"MUT: {mut_prob}, CROSS: {cross_prob}, POPSIZE: {pop_size}, ITERS: {x[-1]}, TIME: {elapsed}\n"
+            )
+
+
+# PLOTTING
+"""
     fig, axs = plt.subplots(
         len(mutation_probs), 1, figsize=(10, len(mutation_probs) * 5)
     )
@@ -174,3 +200,4 @@ if __name__ == "__main__":
     print(f"Setup time: {stime}")
     plt.tight_layout()
     plt.show()
+    """
