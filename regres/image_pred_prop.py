@@ -42,28 +42,28 @@ def conv_forward(A_prev, W, b, hparameters):
     # padding from hyperparameters
     pad = hparameters["pad"]
 
-    # dimensions of  CONV output
+    # dimensions of CONV out
     n_H = int((n_H_prev - f + 2 * pad) / stride) + 1
     n_W = int((n_W_prev - f + 2 * pad) / stride) + 1
 
-    # output volume Z with zeros
+    # volume Z with zeros out
     Z = np.zeros((m, n_H, n_W, n_C))
 
     # A_prev_pad by padding A_prev
     A_prev_pad = np.pad(A_prev, ((0, 0), (pad, pad), (pad, pad), (0, 0)), "constant")
 
-    for i in range(m):  # Loop over  batch of training examples
-        a_prev_pad = A_prev_pad[i]  # Select ith training example padded activation
-        for h in range(n_H):  # Loop over vertical axis of  output volume
-            for w in range(n_W):  # Loop over horizontal axis of  output volume
-                for c in range(n_C):  # Loop over channels of  output volume
+    for i in range(m):  # Loop batch of training examples
+        a_prev_pad = A_prev_pad[i]  # choose ith training example padded activation
+        for h in range(n_H):  # Loop vertical axis of output volume
+            for w in range(n_W):  # Loop horizontal axis of output volume
+                for c in range(n_C):  # Loop channels of output volume
                     # Find  corners of  current "slice"
                     vert_start = h * stride
                     vert_end = vert_start + f
                     horiz_start = w * stride
                     horiz_end = horiz_start + f
 
-                    # use  corners to define  slice from a_prev_pad
+                    # use corners to define slice from a_prev_pad
                     a_slice_prev = a_prev_pad[
                         vert_start:vert_end, horiz_start:horiz_end, :
                     ]
@@ -87,7 +87,7 @@ def relu_forward(Z):
 
     assert A.shape == Z.shape
 
-    cache = Z  # We store Z to use it later in backpropagation
+    cache = Z  # store Z to use it later in backpropagation
 
     return A, cache
 
