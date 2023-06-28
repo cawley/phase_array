@@ -15,21 +15,29 @@ EPISODES = 25000
 SHOW_EVERY = 3000
 
 DISCRETE_OS_SIZE = [20] * len(env.observation_space.high)
-discrete_os_win_size = (env.observation_space.high - env.observation_space.low)/DISCRETE_OS_SIZE
+discrete_os_win_size = (
+    env.observation_space.high - env.observation_space.low
+) / DISCRETE_OS_SIZE
 
 # Exploration settings
 epsilon = 1  # not a constant, going to be decayed
 START_EPSILON_DECAYING = 1
-END_EPSILON_DECAYING = EPISODES//2
-epsilon_decay_value = epsilon/(END_EPSILON_DECAYING - START_EPSILON_DECAYING)
+END_EPSILON_DECAYING = EPISODES // 2
+epsilon_decay_value = epsilon / (END_EPSILON_DECAYING - START_EPSILON_DECAYING)
 
 # Lookup table of Q-reward values
-q_table = np.random.uniform(low=-2, high=0, size=(DISCRETE_OS_SIZE + [env.action_space.n]))
+q_table = np.random.uniform(
+    low=-2, high=0, size=(DISCRETE_OS_SIZE + [env.action_space.n])
+)
+
 
 # Translating a continuous state to discrete one
 def get_discrete_state(state):
-    discrete_state = (state - env.observation_space.low)/discrete_os_win_size
-    return tuple(discrete_state.astype(np.int))  # we use this tuple to look up the 3 Q values for the available actions in the q-table
+    discrete_state = (state - env.observation_space.low) / discrete_os_win_size
+    return tuple(
+        discrete_state.astype(np.int)
+    )  # we use this tuple to look up the 3 Q values for the available actions in the q-table
+
 
 for episode in range(EPISODES):
     state, _ = env.reset()
@@ -43,7 +51,6 @@ for episode in range(EPISODES):
     else:
         render = False
     while not done:
-
         if np.random.random() > epsilon:
             # Get action from Q table
             action = np.argmax(q_table[discrete_state])
@@ -57,7 +64,7 @@ for episode in range(EPISODES):
         new_state, reward, done, truncated, _ = env.step(action)
         new_discrete_state = get_discrete_state(new_state)
         env.render()
-        #new_q = (1 - LEARNING_RATE) * current_q + LEARNING_RATE * (reward + DISCOUNT * max_future_q)
+        # new_q = (1 - LEARNING_RATE) * current_q + LEARNING_RATE * (reward + DISCOUNT * max_future_q)
 
         # If simulation did not end after the previous step update the Q-reward table
         if not done:
@@ -68,15 +75,17 @@ for episode in range(EPISODES):
             current_q = q_table[discrete_state + (action,)]
 
             # NEW_Q calculated equation
-            new_q = (1 - LEARNING_RATE) * current_q + LEARNING_RATE * (reward + DISCOUNT * max_future_q)
+            new_q = (1 - LEARNING_RATE) * current_q + LEARNING_RATE * (
+                reward + DISCOUNT * max_future_q
+            )
 
             # Update Q table with new Q value
             q_table[discrete_state + (action,)] = new_q
-            
+
         else:
             # If the simulation ends (i.e. goal position) update Q with reward directly
             if new_state[0] >= env.goal_position:
-                #q_table[discrete_state + (action,)] = reward
+                # q_table[discrete_state + (action,)] = reward
                 q_table[discrete_state + (action,)] = 0
             discrete_state = new_discrete_state
 
