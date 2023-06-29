@@ -1,5 +1,5 @@
 ## Convolutional Neural Network for Sharp Image Prediction from Noise
-### [Detailed Overview Here](https://github.com/cawley/phase_array/edit/main/conv_net/README.md#relu-rectified-linear-unit-functions)
+### [Detailed Overview Here](https://github.com/cawley/phase_array/main/conv_net/README.md#relu-rectified-linear-unit-functions)
 ### Initialize Parameters: 
 This step is a bit like setting the initial positions for all the players on a soccer field before the game starts. Each player (or "parameter") has an important role in the game (the "prediction task"), and their initial positions could affect the outcome of the game. The function initialize_parameters() is responsible for setting these starting positions.
 
