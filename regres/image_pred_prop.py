@@ -57,7 +57,7 @@ def conv_forward(A_prev, W, b, hparameters):
         for h in range(n_H):  # Loop vertical axis of output volume
             for w in range(n_W):  # Loop horizontal axis of output volume
                 for c in range(n_C):  # Loop channels of output volume
-                    # Find  corners of  current "slice"
+                    # Find corners of  current "slice"
                     vert_start = h * stride
                     vert_end = vert_start + f
                     horiz_start = w * stride
@@ -100,12 +100,12 @@ def pool_forward(A_prev, hparameters, mode="max"):
     f = hparameters["f"]  # filter size
     stride = hparameters["stride"]
 
-    # Define dimensions of  output
+    # dimensions of output
     n_H = int(1 + (n_H_prev - f) / stride)
     n_W = int(1 + (n_W_prev - f) / stride)
     n_C = n_C_prev
 
-    # Initialize output matrix A
+    # output matrix A
     A = np.zeros((m, n_H, n_W, n_C))
 
     for i in range(m):  # loop over  training examples
