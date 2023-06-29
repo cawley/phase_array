@@ -1,4 +1,4 @@
-# Convolutional Neural Network for Sharp Image Prediction from Noise
+## Convolutional Neural Network for Sharp Image Prediction from Noise
 
 **ReLU (Rectified Linear Unit) Functions**
 
