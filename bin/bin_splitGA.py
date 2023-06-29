@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 import math
 from collections import Counter
 from numpy import nonzero
+from multiprocessing import Pool
 import time
 
 start_time = time.time()
@@ -82,9 +83,6 @@ def random_reset_mutation(c1, r_mut):
         if r < r_mut:
             c1[i] = 1 if c1[i] == 0 else 0
     return c1
-
-
-from multiprocessing import Pool
 
 
 def genetic_algorithm(population, r_mut, n_iter):
