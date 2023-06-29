@@ -57,7 +57,7 @@ def conv_forward(A_prev, W, b, hparameters):
         for h in range(n_H):  # Loop vertical axis of output volume
             for w in range(n_W):  # Loop horizontal axis of output volume
                 for c in range(n_C):  # Loop channels of output volume
-                    # Find corners of  current "slice"
+                    # corners of current "slice"
                     vert_start = h * stride
                     vert_end = vert_start + f
                     horiz_start = w * stride
@@ -87,7 +87,7 @@ def relu_forward(Z):
 
     assert A.shape == Z.shape
 
-    cache = Z  # store Z to use it later in backpropagation
+    cache = Z  # store Z for backpropagation
 
     return A, cache
 
@@ -108,26 +108,26 @@ def pool_forward(A_prev, hparameters, mode="max"):
     # output matrix A
     A = np.zeros((m, n_H, n_W, n_C))
 
-    for i in range(m):  # loop over  training examples
-        for h in range(n_H):  # loop on  vertical axis
-            for w in range(n_W):  # loop on  horizontal axis
-                for c in range(n_C):  # loop over  channels (depth)
-                    # Find  corners of  current "slice" (≈4 lines)
+    for i in range(m):  # loop over training examples
+        for h in range(n_H):  # loop on vertical axis
+            for w in range(n_W):  # loop on horizontal axis
+                for c in range(n_C):  # loop over channels (depth)
+                    # corners of current "slice"
                     vert_start = h * stride
                     vert_end = vert_start + f
                     horiz_start = w * stride
                     horiz_end = horiz_start + f
 
-                    # Use  corners to define  current slice on  ith training example of A_prev
+                    # Use  corners to define current slice on ith training example of A_prev
                     a_prev_slice = A_prev[
                         i, vert_start:vert_end, horiz_start:horiz_end, c
                     ]
 
-                    # Compute  pooling operation on  slice
+                    # Compute pooling operation on slice
                     if mode == "max":
                         A[i, h, w, c] = np.max(a_prev_slice)
 
-    # Store  input and hparameters in "cache" for pool_backward()
+    # input and hparameters in "cache" for pool_backward()
     cache = (A_prev, hparameters)
 
     # Making sure your output shape is correct
