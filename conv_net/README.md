@@ -1,5 +1,7 @@
 ## Convolutional Neural Network for Sharp Image Prediction from Noise
 
+![alt text](https://github.com/cawley/phase_array/blob/adb77d2a6ff5f12d40eb4c314bd67f72104a255c/files/layers.gif)
+
 **ReLU (Rectified Linear Unit) Functions**
 
 1.  `relu(Z)`: Applies the ReLU activation function elementwise on the input `Z`. ReLU function is max(0, Z), and it introduces non-linearity in the network, enabling the network to learn complex patterns.
