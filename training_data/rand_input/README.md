@@ -1,6 +1,6 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 # Hi! :blush: Welcome to the phase_array README.md! 😍 We hope this helps! 😝
-## Phase Array Calibrator 📡
+## Phased Array Calibrator 📡
 
 This Python repository focuses on creating a calibrator application that optimizes the amplitude of a [phased array](https://en.wikipedia.org/wiki/Phased_array#:~:text=In%20antenna%20theory%2C%20a%20phased,directions%20without%20moving%20the%20antennas) by adjusting the phase shift and attenuator positions of [Anokiwave AWS-0103](https://www.anokiwave.com/products/aws-0103/index.html) beamformers. The calibrator accepts binary files representing the system state of each AWS-0103 alters phase shifter position, gain and attenuation values to calibrate each beamformer, and consequently the phased array beam, in a user-defined configuration. These two papers provide a [simple overview](https://web2.norsonic.com/wp-content/uploads/2016/10/TN-beamformers.pdf) and a more [in-depth look](https://sci-hub.ru/10.1109/8.923310) at beamformers and how they are calibrated.
 
