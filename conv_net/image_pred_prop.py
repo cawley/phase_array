@@ -52,11 +52,11 @@ def conv_forward(A_prev, W, b, hparameters):
     # A_prev_pad by padding A_prev
     A_prev_pad = np.pad(A_prev, ((0, 0), (pad, pad), (pad, pad), (0, 0)), "constant")
 
-    for i in range(m):  # Loop batch of training examples
+    for i in range(m):  # loop batch of training examples
         a_prev_pad = A_prev_pad[i]  # choose ith training example padded activation
-        for h in range(n_H):  # Loop vertical axis of output volume
-            for w in range(n_W):  # Loop horizontal axis of output volume
-                for c in range(n_C):  # Loop channels of output volume
+        for h in range(n_H):  # loop vertical axis of output volume
+            for w in range(n_W):  # loop horizontal axis of output volume
+                for c in range(n_C):  # loop channels of output volume
                     # corners of current "slice"
                     vert_start = h * stride
                     vert_end = vert_start + f
