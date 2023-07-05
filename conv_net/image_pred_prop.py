@@ -319,3 +319,16 @@ def model(
     print(f"Runtime: {elapsed} seconds.")
 
     return parameters
+
+    def train_model(X_train, Y_train, layers_dims, learning_rate, num_iterations):
+    parameters = initialize_parameters(layers_dims)
+    for i in range(num_iterations):
+        Z, cache = conv_forward(X_train, parameters["W"], parameters["b"], hparameters)
+        A, cache_relu = relu_forward(Z)
+        loss = compute_loss(A, Y_train)
+        dZ = relu_backward(dA, cache_relu)
+        dA_prev, dW, db = conv_backward(dZ, cache)
+        parameters["W"] -= learning_rate * dW
+        parameters["b"] -= learning_rate * db
+    return parameters
+
