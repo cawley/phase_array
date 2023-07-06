@@ -5,11 +5,20 @@ In the near future we want to use a genetic algorithm to maximize output paramet
 ### Proposed steps:
 
 ●	Download Q5 problem folder, EECS 492 pdf, and book
+
 ●	Attempt problem 5.3 from HW 1 from EECS 492 Foundations of AI
+
 ○	Read sections 4 (pg 233) to 4.1.4 (pg 250) from AI A Modern Approach
+
 ○	Download IDE, Python, and necessary packages (numpy, random)
+
 ○	Successfully run Q5\main.py
+
 ○	Implement the genetic algorithm function in Q5\utils.py according to problem definition
+
 ○	Compare to solution
+
 ●	Research continuous genetic algorithm implementations, make appropriate changes to data structures/paring/mating/mutations, and verify convergence with a simple objective function of 64 variables
+
 ●	Implement genetic algorithm with phased array measurement feedback loop 
+
