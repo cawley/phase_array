@@ -1,3 +1,7 @@
+### Author: Liam Cawley, May 2023
+### Notes on NEOSCAN Physics, to be read alongside "NeoScan® Real-Time Field Measurement & Scanning System Physics"
+
+
 ## Chapter 1
 Polarizer and Analyzer: When we pass a beam of light through two polarizing elements one after the other, the first one is called the Polarizer and the second one is the Analyzer. These elements affect the light's intensity based on their respective transmission axis angles. In other words, these two elements work together to control the amount of light that gets through based on how they're aligned with each other.
 
@@ -59,3 +63,19 @@ Index Ellipsoid or Optical Indicatrix: This is a mathematical model that describ
 Uniaxial Birefringence: In some materials, there's only one direction (the "optic axis") that's special. In these, there are two primary refractive indices - one for the ordinary ray, and another for the extraordinary ray. These indices define how much each wave is refracted, or bent, within the material.
 
 Index Ellipsoid Use: By using the index ellipsoid, you can find the directions and refractive indices for the ordinary and extraordinary rays. This is achieved by drawing a plane normal (at a right angle) to the direction of the ray's propagation, which intersects the index ellipsoid. This gives an ellipse that provides the information for the waves' polarization and refractive indices.
+
+Fast and Slow Axis: Just like a filter lets only certain things through (think of a coffee filter allowing liquid through but not grounds), a linear polarizer lets certain types of light through. Light travels as waves, and these waves can have different orientations. A polarizer only allows waves with a certain orientation to pass. In a special kind of optical material called a wave plate, light can travel along two axes, known as the fast and slow axes. As their names suggest, light along the fast axis travels slightly faster than light along the slow axis, causing the light waves along these axes to become out of sync with each other. Depending on the type of crystal, the fast and slow axes can correspond to different properties of the light waves.
+
+1/4-Wave Plate (Quarter-Wave Plate): This is a special type of wave plate used to change the way light is polarized. Polarization is a property of light that describes the direction in which the light waves are oscillating. A quarter-wave plate can change light from linear polarization (where the light waves oscillate in a line) to circular polarization (where the light waves oscillate in a circle), or vice versa. To do this, the quarter-wave plate slows down one component of the light wave just enough so that it becomes a quarter of a wave behind the other component.
+
+1/2-Wave Plate (Half-Wave Plate): This is another type of wave plate, which flips the polarization of light. This means if light was oscillating in one direction, after passing through the half-wave plate, it will oscillate in the exact opposite direction. It's like looking at the light wave in a mirror. This is useful when you want to rotate the polarization of light to a certain angle.
+
+Birefringent Plate between Parallel Polarizers: A birefringent plate is a piece of material that splits light into two rays traveling at different speeds. If you place a birefringent plate between two polarizers that are lined up in the same direction, and turn the plate to a 45-degree angle, you'll get a beam of light that has some interesting properties. It's a bit like passing a group of runners through a narrow gate, with the runners being the light and the gate being the polarizers.
+
+Birefringent Plate between Crossed Polarizers: The setup is similar to the previous point, but this time the polarizers are crossed, meaning they're at right angles to each other. Now, the "gate" the "runners" have to pass through is even narrower.
+
+Rotating the Analyzer: Here, we're adjusting the analyzer, which is a special kind of polarizer, to be at an angle with the original polarizer. This creates a situation where the polarizers are neither parallel nor crossed, and the birefringent plate is again at a 45-degree angle. This changes the characteristics of the light that passes through.
+
+Finding the Fast and Slow Axes of a Retarder: This is like finding the best path for the runners in our race. By placing the retarder (another device that changes light properties) between two crossed polarizers and turning it until the most light gets through, you can identify the fast and slow axes. The fast axis is the direction the "fastest runners" take, and the slow axis is the direction for the "slowest runners". You can also identify which axis is which by checking how the color of the light changes as you rotate the retarder.
+
+Determining a 1/4 Wave Retarder from a 1/2 Wave Retarder: These are two types of retarders that change the light in different ways. A 1/4 wave retarder turns linearly polarized light (light vibrating in a line) into circularly polarized light (light vibrating in a circle), and a 1/2 wave retarder changes the angle of linearly polarized light. You can figure out which type of retarder you have by seeing how the light changes when you shine it through the retarder and into an analyzer. If the brightness of the light changes as you turn the analyzer, you have a 1/2 wave retarder. If the brightness stays the same, it's a 1/4 wave retarder.
