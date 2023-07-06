@@ -321,7 +321,9 @@ def model(
     return parameters
 
     def train_model(X_train, Y_train, layers_dims, learning_rate, num_iterations):
+
     parameters = initialize_parameters(layers_dims)
+    
     for i in range(num_iterations):
         Z, cache = conv_forward(X_train, parameters["W"], parameters["b"], hparameters)
         A, cache_relu = relu_forward(Z)
