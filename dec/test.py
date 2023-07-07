@@ -23,7 +23,7 @@ def main():
     N = 16
     population_size = 8
     num_runs = 14000
-    arr_ones = np.ones((N, N))
+    arr_ones = np.ones((N, N)) / 2
     population = [arr_ones for _ in range(population_size)]
 
     #out_SARR = dec_SARR.steepestAscentRandomRestart(num_runs, arr_ones)
