@@ -15,7 +15,7 @@ import time
 
 
 # create environment
-env = gym.make("MountainCar-v0", render_mode="human")
+env = gym.make("CartPole", render_mode="human")
 # reset the environment,
 # returns an initial state
 (state, _) = env.reset()
@@ -25,7 +25,7 @@ env = gym.make("MountainCar-v0", render_mode="human")
 
 
 # simulate the environment
-episodeNumber = 5
+episodeNumber = 20
 timeSteps = 3000
 
 
