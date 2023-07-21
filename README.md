@@ -16,6 +16,19 @@ This Python repository focuses on creating a calibrator application that optimiz
   - The MUSIC (MUltiple SIgnal Classification) beamforming algorithm starts by decomposing the covariance matrix for both the signal and noise parts. It uses the noise sub-space of the spatial covariance matrix in the denominator of the Capon algorithm, thus known as subspace           beamformer. This approach provides better Direction of Arrival (DOA) estimation compared to the Capon beamformer. The ESPRIT algorithm can be used as an alternative approach.
 - [Artificial Intelligence](https://sci-hub.se/10.1109/MAP.2020.3036097)
   - The ongoing trend in digital signal processing for DAA involves the use of Artificial Intelligence technologies.
+ 
+## Our Approaches 🌉
+
+ - [Memoryless Machine Learning]()
+   - Metaheuristic algorithms (GA, PSO, SARR, QA) take inspriation from natural phenomena to optimize poorly defined functions for which traditional derivatives are not applicable.
+ - [Weighted and Cached Machine Learning]()
+   - Memory, multithreading, encodings, caching and other optimization strategies built on to each metaheuristic algorithm to help scale up to large-N input size.
+ - [Linear Model Approach]()
+   - Linear learning models like XGB, RFR and GBM proved not to have the complexity necessary to accurately model these nonlinear systems.
+ - [Reinforcement Learning Approach]()
+   - Reinforcement learning models create a set of actions 𝒜 called an Agent, and create an optimal strategy called a policy 𝓟 based on a reward system 𝕼.
+ - [Nonlinear Output Prediction via Convolutional Neural Net]()
+   - Here, we encode the state of the phased array as an image where each cell is a pixel and apply the calculated optimal improvements to the image based on historical data as well as expert system analysis.  
 
 ## Problem Statement 📓
 
