@@ -1,5 +1,5 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-# Anokiwave AWS-0103 Beamformer Calibration 
+# Anokiwave AWS-0103 Beamformer Calibration, Binary Representation 
 
 ## Overview
 This repository contains Python implementations of several metaheuristic search algorithms for calibrating an Anokiwave AWS-0103 beamformer. The algorithms are general-purpose search algorithms and do not include any beamforming-specific knowledge or physics.
